@@ -14,14 +14,7 @@ const upload = multer();
 const { createClient } = require("@supabase/supabase-js");
 const supabaseDB = createClient(process.env.SUPABASEURL,process.env.SUPABASEKEY);
 
-// async function testDB() {
-//     let { data, error } = await supabaseDB
-//         .from('postings')
-//         .insert(
-//             { groupName: 'Joonsung Node Study Group', location: 'Fulton Library 303', members: 'joonsung, jason, jerry', date: '2021-12-01', startTime: '10:00', endTime: '12:00', resources: ['url1', 'url2', 'url3'], topic: [' Node.js', 'Express.js', 'NPM'] }
-//         );
-//     }
-// testDB();
+
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname, "index.html");

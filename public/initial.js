@@ -13,44 +13,64 @@ function renderPostings(postings) {
   let postingsContainer = document.querySelector("#postings");
   postingsContainer.innerHTML = "";
   postings.forEach((posting) => {
-    console.log(typeof posting.startTime)
     let postingElement = document.createElement("div");
     postingElement.innerHTML = `
-        <div class="overflow-hidden sm:rounded-lg bg-slate-100" data-id="${posting.id}">
+        <div class="overflow-hidden sm:rounded-lg bg-slate-100" data-id="${
+          posting.id
+        }">
             <div class="px-4 py-5 sm:px-6">
-                <h3 class="text-lg font-medium leading-6 text-gray-900">${posting.groupName}</h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500">${posting.location}</p>
+                <h3 class="text-lg font-medium leading-6 text-gray-900">${
+                  posting.groupName
+                }</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">${
+                  posting.location
+                }</p>
             </div>
             <div class="border-t border-gray-200">
                 <dl>
-                    <div class=" px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <div class=" px-4 py-5 sm:gap-4 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">Date</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${posting.date}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${
+                          posting.date
+                        }</dd>
                     </div>
-                    <div class=" px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <div class=" px-4 py-5 sm:gap-4 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">Members</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${posting.members}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${
+                          posting.members
+                        }</dd>
                     </div>
-                    <div class=" px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <div class=" px-4 py-5 sm:gap-4 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">Start Time</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${posting.startTime.slice(0, -3)}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${posting.startTime.slice(
+                          0,
+                          -3
+                        )}</dd>
                     </div>
-                    <div class=" px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <div class=" px-4 py-5 sm:gap-4 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">End Time</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${posting.endTime.slice(0, -3)}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${posting.endTime.slice(
+                          0,
+                          -3
+                        )}</dd>
                     </div>
-                    <div class=" px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <div class=" px-4 py-5sm:gap-4 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">Resources</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${posting.resources}</dd>  
+                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${
+                          posting.resources
+                        }</dd>  
                     </div>
-                    <div class=" px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <div class=" px-4 py-5 sm:gap-4 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">Topic</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${posting.topic}</dd>  
+                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${
+                          posting.topic
+                        }</dd>  
                     </div>
                 </dl>
             </div>
         </div>
     `;
+    postingElement.classList.add('basis-[46%]', 'md:basis-[30%]')
     postingsContainer.appendChild(postingElement);
   });
 }
@@ -98,6 +118,7 @@ function addClass() {
 
 const membersInput = document.querySelector("#members");
 const membersArr = [];
+
 function addMembers(e) {
   const membersUl = document.querySelector("#membersUl");
   if (e.key === "Enter") {
@@ -110,12 +131,38 @@ function addMembers(e) {
       tag.textContent = membersInput.value;
       membersArr.push(membersInput.value);
       console.log(membersArr);
-      tag.classList.add("border", "border-gray-300", "rounded-lg", "px-4", "py-2" , "m-2", 'relative');
+      tag.classList.add(
+        "border",
+        "border-gray-300",
+        "rounded-lg",
+        "px-4",
+        "py-2",
+        "m-2",
+        "relative"
+      );
 
       // remove btn -> <svg class="h-8 w-8 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
       const removeBtn = document.createElement("button");
       removeBtn.textContent = "x";
-      removeBtn.classList.add("absolute", 'flex' , 'justify-center', 'items-center' , "-right-4", "-top-4", "text-red-500", 'bg-red-400', 'text-black', 'w-6', 'h-6', 'rounded-full', 'hover:bg-red-500', 'hover:text-white', 'transition', 'duration-300', 'ease-in-out');
+      removeBtn.classList.add(
+        "absolute",
+        "flex",
+        "justify-center",
+        "items-center",
+        "-right-4",
+        "-top-4",
+        "text-red-500",
+        "bg-red-400",
+        "text-black",
+        "w-6",
+        "h-6",
+        "rounded-full",
+        "hover:bg-red-500",
+        "hover:text-white",
+        "transition",
+        "duration-300",
+        "ease-in-out"
+      );
       removeBtn.addEventListener("click", (e) => {
         const index = membersArr.indexOf(tag.textContent);
         membersArr.splice(index, 1);
@@ -124,32 +171,61 @@ function addMembers(e) {
 
       tag.appendChild(removeBtn);
 
-
       membersUl.appendChild(tag);
       membersInput.value = "";
     }
   }
 }
-membersInput.addEventListener("keydown", (e) => {addMembers(e)});
+membersInput.addEventListener("keydown", (e) => {
+  addMembers(e);
+});
 
 const imageInput = document.querySelector("#resources");
 
 let resourcesArr = [];
-function addResources(url, name) {
-  resourcesArr.push(url);
+
+function addResources(sentData) {
+  resourcesArr.push(sentData);
+  console.log(resourcesArr);
   const resourcesUl = document.querySelector("#resourcesUl");
   resourcesUl.innerHTML = "";
   //file name will be name, and href is url
   resourcesArr.forEach((resource) => {
     const tag = document.createElement("a");
-    tag.textContent = name;
-    tag.href = url;
+    tag.textContent = resource.name;
+    tag.href = resource.url;
     tag.target = "_blank";
-    tag.classList.add("border", "border-gray-300", "rounded-lg", "px-4", "py-2" , "m-2", 'relative');
-    // remove btn -> <svg class="h-8 w-8 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
+    tag.classList.add(
+      "border",
+      "border-gray-300",
+      "rounded-lg",
+      "px-4",
+      "py-2",
+      "m-2",
+      "relative"
+    );
+
     const removeBtn = document.createElement("button");
     removeBtn.textContent = "x";
-    removeBtn.classList.add("absolute", 'flex' , 'justify-center', 'items-center' , "-right-4", "-top-4", "text-red-500", 'bg-red-400', 'text-black', 'w-6', 'h-6', 'rounded-full', 'hover:bg-red-500', 'hover:text-white', 'transition', 'duration-300', 'ease-in-out');
+    removeBtn.classList.add(
+      "absolute",
+      "flex",
+      "justify-center",
+      "items-center",
+      "-right-4",
+      "-top-4",
+      "text-red-500",
+      "bg-red-400",
+      "text-black",
+      "w-6",
+      "h-6",
+      "rounded-full",
+      "hover:bg-red-500",
+      "hover:text-white",
+      "transition",
+      "duration-300",
+      "ease-in-out"
+    );
     removeBtn.addEventListener("click", (e) => {
       const index = resourcesArr.indexOf(tag.textContent);
       resourcesArr.splice(index, 1);
@@ -158,13 +234,11 @@ function addResources(url, name) {
 
     tag.appendChild(removeBtn);
     resourcesUl.appendChild(tag);
-
   });
 }
 
-
 imageInput.addEventListener("change", async (e) => {
-  console.log('debugging1')
+  console.log("debugging1");
   const file = e.target.files[0];
   if (!file) {
     console.error("No file selected");
@@ -174,34 +248,40 @@ imageInput.addEventListener("change", async (e) => {
   if (file) {
     const formData = new FormData();
     formData.append("file", file);
-    console.log('debugging2')
+    console.log("debugging2");
     fetch("/imgUpload", {
       method: "POST",
       body: formData,
     })
       .then((res) => {
-        console.log('debugging3')
+        console.log("debugging3");
         return res.json();
       })
       .then((data) => {
-        console.log('debugging4')
-        console.log(data.name)
-        if(data.url.indexOf(' ') ) {
-          let goodUrl = data.url.replace(/\s/g, '%20');
-          addResources(goodUrl, data.name);
+        console.log("debugging4");
+        if (data.url.indexOf(" ")) {
+          let goodUrl = data.url.replace(/\s/g, "%20");
+          const sendingData = {
+            url: goodUrl,
+            name: data.name,
+          };
+          addResources(sendingData);
         } else {
-          addResources(data.url, data.name);
+          const sendingData = {
+            url: data.url,
+            name: data.name,
+          };
+          addResources(sendingData);
         }
-
-      }).catch((err) => {
-        console.error(err);
       })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 });
 
-
-function addSeconds (time){
-  return time + ":00"
+function addSeconds(time) {
+  return time + ":00";
 }
 
 function addPosting() {
@@ -214,7 +294,7 @@ function addPosting() {
   let resources = document.getElementById("resources").value;
   let topic = document.getElementById("topic").value;
 
-  console.log(members)
+  console.log(members);
   let newPosting = {
     groupName: groupName,
     location: location,
@@ -237,9 +317,6 @@ function addPosting() {
       console.error(error);
     });
 }
-
-
-
 
 document.querySelector("#submitBtn").addEventListener("click", addPosting);
 addClass();
