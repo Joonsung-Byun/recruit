@@ -22,8 +22,28 @@ app.get("/", (req, res) => {
 
 app.get("/postings", async (req, res) => {
   let { data, error } = await supabaseDB.from("postings").select("*");
-  console.log(data);
   res.send(data);
+});
+
+app.post("/postings", async (req, res) => {
+  const { data: insertData, error: insertError } = await supabaseDB
+      .from("postings")
+      .insert(req.body);
+
+  if (insertError) {
+    console.log(insertError.message);
+      return res.status(500).json({ error: insertError.message });
+  }
+
+  const { data: selectData, error: selectError } = await supabaseDB
+      .from("postings")
+      .select("*");
+
+  if (selectError) {
+      return res.status(500).json({ error: selectError.message });
+  }
+
+  res.status(200).send(selectData);
 });
 
 app.post("/imgUpload", upload.single("file"), async (req, res) => {
@@ -52,18 +72,7 @@ app.post("/imgUpload", upload.single("file"), async (req, res) => {
   }
 });
 
-app.post("/postings", async (req, res) => {
-    const { data: insertData, error: insertError } = await supabaseDB
-      .from("postings")
-      .insert(req.body);
 
-    const { data: selectData, error: selectError } = await supabaseDB
-      .from("postings")
-      .select("*");
-
-    res.status(200).json(selectData);
-}
-);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

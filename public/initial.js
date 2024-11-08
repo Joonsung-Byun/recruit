@@ -9,68 +9,125 @@ function getPostings() {
     });
 }
 
+function isJSON(str) {
+  try {
+      // JSON.parse가 정상적으로 동작하면 JSON임
+      JSON.parse(str);
+      return true;
+  } catch (e) {
+      // 오류가 발생하면 JSON이 아님
+      return false;
+  }
+}
+
 function renderPostings(postings) {
   let postingsContainer = document.querySelector("#postings");
   postingsContainer.innerHTML = "";
+
   postings.forEach((posting) => {
+    console.log(posting.resources)
+    // Wrapper
     let postingElement = document.createElement("div");
-    postingElement.innerHTML = `
-        <div class="overflow-hidden sm:rounded-lg bg-slate-100" data-id="${
-          posting.id
-        }">
-            <div class="px-4 py-5 sm:px-6">
-                <h3 class="text-lg font-medium leading-6 text-gray-900">${
-                  posting.groupName
-                }</h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500">${
-                  posting.location
-                }</p>
-            </div>
-            <div class="border-t border-gray-200">
-                <dl>
-                    <div class=" px-4 py-5 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Date</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${
-                          posting.date
-                        }</dd>
-                    </div>
-                    <div class=" px-4 py-5 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Members</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${
-                          posting.members
-                        }</dd>
-                    </div>
-                    <div class=" px-4 py-5 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Start Time</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${posting.startTime.slice(
-                          0,
-                          -3
-                        )}</dd>
-                    </div>
-                    <div class=" px-4 py-5 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">End Time</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${posting.endTime.slice(
-                          0,
-                          -3
-                        )}</dd>
-                    </div>
-                    <div class=" px-4 py-5sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Resources</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${
-                          posting.resources
-                        }</dd>  
-                    </div>
-                    <div class=" px-4 py-5 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Topic</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">${
-                          posting.topic
-                        }</dd>  
-                    </div>
-                </dl>
-            </div>
-        </div>
+    postingElement.classList.add(
+      "bg-white",
+      "border",
+      "border-gray-300",
+      "rounded-lg",
+      "p-4",
+      "mb-4",
+      "dark:bg-gray-800",
+      "basis-[46%]",
+      "md:basis-[30%]"
+    );
+
+    // Group name
+    let postingTitle = document.createElement("div");
+    postingTitle.classList.add("mb-2");
+    postingTitle.innerHTML = `
+      <h2 class="text-lg font-bold">Group Name</h2>
+      <p>${posting.groupName}</p>
     `;
-    postingElement.classList.add('basis-[46%]', 'md:basis-[30%]')
+
+    // Location
+    let postingLocation = document.createElement("div");
+    postingLocation.classList.add("mb-2");
+    postingLocation.innerHTML = `
+      <h2 class="text-lg font-bold">Location</h2>
+      <p>${posting.location}</p>
+    `;
+
+    // Members
+    let postingMembers = document.createElement("div");
+    postingMembers.classList.add("mb-2");
+    let membersHTML = `
+      <h2 class="text-lg font-bold">Members</h2>
+      <ul>
+    `;
+    isJSON
+
+    membersHTML += `</ul>`;
+    postingMembers.innerHTML = membersHTML;
+
+    // Date
+    let postingDate = document.createElement("div");
+    postingDate.classList.add("mb-2");
+    postingDate.innerHTML = `
+      <h2 class="text-lg font-bold">Date</h2>
+      <p>${posting.date}</p>
+    `;
+
+    // Start time
+    let postingStartTime = document.createElement("div");
+    postingStartTime.classList.add("mb-2");
+    postingStartTime.innerHTML = `
+      <h2 class="text-lg font-bold">Start Time</h2>
+      <p>${posting.startTime}</p>
+    `;
+
+    // End time
+    let postingEndTime = document.createElement("div");
+    postingEndTime.classList.add("mb-2");
+    postingEndTime.innerHTML = `
+      <h2 class="text-lg font-bold">End Time</h2>
+      <p>${posting.endTime}</p>
+    `;
+
+    // Resources
+    let postingResources = document.createElement("div");
+    postingResources.classList.add("mb-2");
+    let resourcesHTML = `
+      <h2 class="text-lg font-bold">Resources</h2>
+      <ul>
+    `;
+    JSON.parse(posting.resources).forEach((resource) => {
+      resourcesHTML += `
+        <li>
+          <a href="${resource.url}" target="_blank">${resource.name}</a>
+        </li>
+      `;
+    });
+    resourcesHTML += `</ul>`;
+    postingResources.innerHTML = resourcesHTML;
+
+    // Topic
+    let postingTopic = document.createElement("div");
+    postingTopic.classList.add("mb-2");
+    postingTopic.innerHTML = `
+      <h2 class="text-lg font-bold">Topic</h2>
+      <p>${posting.topic}</p>
+    `;
+
+    // Append all sections to the posting element
+    postingElement.appendChild(postingTitle);
+    postingElement.appendChild(postingLocation);
+    postingElement.appendChild(postingMembers);
+    postingElement.appendChild(postingDate);
+    postingElement.appendChild(postingStartTime);
+    postingElement.appendChild(postingEndTime);
+    postingElement.appendChild(postingResources);
+    postingElement.appendChild(postingTopic);
+
+    // Append the posting element to the container
     postingsContainer.appendChild(postingElement);
   });
 }
@@ -176,6 +233,7 @@ function addMembers(e) {
     }
   }
 }
+
 membersInput.addEventListener("keydown", (e) => {
   addMembers(e);
 });
@@ -285,9 +343,10 @@ function addSeconds(time) {
 }
 
 function addPosting() {
+  console.log(membersArr)
   let groupName = document.getElementById("name").value;
   let location = document.getElementById("location").value;
-  let members = membersArr.join(", ");
+  let members = membersArr
   let date = document.getElementById("date").value;
   let startTime = document.getElementById("startTime").value;
   let endTime = document.getElementById("endTime").value;
@@ -298,11 +357,11 @@ function addPosting() {
   let newPosting = {
     groupName: groupName,
     location: location,
-    members: members,
+    members: membersArr,
     date: date,
     startTime: addSeconds(startTime),
     endTime: addSeconds(endTime),
-    resources: resources,
+    resources: resourcesArr,
     topic: topic,
   };
   axios({
@@ -311,6 +370,7 @@ function addPosting() {
     data: newPosting,
   })
     .then((response) => {
+      console.log(response.data);
       renderPostings(response.data);
     })
     .catch((error) => {
