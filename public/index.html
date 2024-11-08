@@ -10,78 +10,83 @@
 
 <body>
     <!-- <custom-nav></custom-nav> -->
-        <main id="main" class="p-4">
-            <section class="bg-white dark:bg-gray-900">
+    <main id="main" class="p-4">
+        <section class="bg-white dark:bg-gray-900">
 
-                
-                    <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
-                        <h2 class=" text-xl font-bold text-gray-900 dark:text-white">Add a new study group posting</h2>
-                        <span class="mb-4 block">All fields required*</span>
-                        
-                        <div>
-                            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                                <div class="sm:col-span-2">
-                                    <label for="name">Study Group Name</label>
-                                    <input type="text" name="name" id="name">
-                                </div>
-                                <div class="w-full">
-                                    <label for="location">Location</label>
-                                    <input type="text" name="location" id="location">
-                                </div>
-                                <div class="w-full">
-                                    <label for="members">Members</label>
-                                    <input type="text" name="members" id="members" >
-                                    <div id="membersUl" class="mt-4">
 
-                                    </div>
-                                </div>
-                                <!--date-->
-                                <div class="w-full">
-                                    <label for="date">Date</label>
-                                    <input type="date" name="date" id="date" >
-                                </div>
-                                <div class="w-full">
-                                    <label for="startTime">Start Time</label>
-                                    <input type="time" name="startTime" id="startTime" >
-                                </div>
-                                
-                                <div>
-                                    <label for="endTime">End Time</label>
-                                    <input type="time" name="endTime" id="endTime">
-                                </div> 
-                                <div class="sm:col-span-2">
-                                    <label for="resources">Resources Upload</label>
-                                    <input type="file" name="resources" id="resources">
-                                    <div id="resourcesUl" class="mt-4 flex gap-4">
-                                    
-                                    </div>
-                                </div>
-                                
-                                <div class="sm:col-span-2">
-                                    <label for="topic">Topic</label>
-                                    <input type="text" name="topic" id="topic">
-                                </div>
+            <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+                <h2 class="4 text-xl font-bold text-gray-900 dark:text-white">Add a new study group posting</h2>
+                <span class="mb-4">All fields required*</span>
+                <div>
+                    <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                        <div class="sm:col-span-2">
+                            <label for="name">Study Group Name</label>
+                            <input type="text" name="name" id="name">
+                        </div>
+                        <div class="w-full">
+                            <label for="location">Location</label>
+                            <input type="text" name="location" id="location">
+                        </div>
+                        <div class="w-full">
+                            <label for="members">Members</label>
+                            <input type="text" name="members" id="members">
+                            <div id="membersUl" class="mt-4">
+
                             </div>
-                            <button id="submitBtn" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
-                                Add product
-                            </button>
+                        </div>
+                        <!--date-->
+                        <div class="w-full">
+                            <label for="date">Date</label>
+                            <input type="date" name="date" id="date">
+                        </div>
+                        <div class="w-full">
+                            <label for="startTime">Start Time</label>
+                            <input type="time" name="startTime" id="startTime">
+                        </div>
+
+                        <div>
+                            <label for="endTime">End Time</label>
+                            <input type="time" name="endTime" id="endTime">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="resources">Resources Upload</label>
+                            <input type="file" name="resources" id="resources">
+                            <div id="resourcesUl" class="mt-4 flex gap-4">
+
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="topic">Topic</label>
+                            <input type="text" name="topic" id="topic">
                         </div>
                     </div>
-                
-                <h1>Schedule</h1>
-                    
-                <div id="postings" class="flex mx-3xl flex-wrap justify-center md:justify-center gap-4">
-                    
+                    <button id="submitBtn"
+                        class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                        Add product
+                    </button>
                 </div>
-              </section>
-    
-        </main>
+            </div>
+            <div class="max-w-4xl mx-auto mb-5">
+                <h1>Schedule</h1>
+            </div>
 
-        
-<!--axios cdn-->
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="/modal.js"></script> 
-<script type="module" src="/initial.js"></script>
+
+            <div id="postings" class="max-w-4xl flex flex-wrap justify-center md:justify-center gap-4 mx-auto">
+
+            </div>
+        </section>
+
+    </main>
+
+    
+    <custom-modal></custom-modal>
+
+
+    <!--axios cdn-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/modal.js"></script>
+    <script type="module" src="/initial.js"></script>
 </body>
 
 </html>

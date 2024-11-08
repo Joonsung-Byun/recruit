@@ -1,3 +1,37 @@
+const imageInput = document.querySelector("#resources");
+let resourcesArr = [];
+
+const membersInput = document.querySelector("#members");
+const membersArr = [];
+
+let toggleButton = document.querySelector("#toggleButton");
+let editModal = document.querySelector("#editModal");
+let closeModalBtn = document.querySelector("#closeModalBtn");
+
+
+function openingModal(e, posting){
+  editModal.classList.remove("hidden");
+  closeModalBtn.addEventListener("click", () => {
+    editModal.classList.add("hidden");
+  });
+  //okay I git the posting as an object passed in
+  document.querySelector("#edit_groupName").value = posting.groupName;
+  document.querySelector("#edit_location").value = posting.location;
+  document.querySelector("#edit_date").value = posting.date;
+  document.querySelector("#edit_startTime").value = posting.startTime;
+  document.querySelector("#edit_endTime").value = posting.endTime;
+  document.querySelector("#edit_topic").value = posting.topic;
+  
+}
+
+function editPosting(e){
+  const id = e.target.id.substr(2);
+  console.log(id);
+  }
+
+
+
+
 function getPostings() {
   axios
     .get("/postings")
@@ -9,36 +43,50 @@ function getPostings() {
     });
 }
 
-function isJSON(str) {
-  try {
-      // JSON.parse가 정상적으로 동작하면 JSON임
-      JSON.parse(str);
-      return true;
-  } catch (e) {
-      // 오류가 발생하면 JSON이 아님
-      return false;
-  }
+function deletePosting(e) {
+  const id = e.target.id.substr(2)
+  axios
+    .delete(`/postings/${id}`)
+    .then((response) => {
+      renderPostings(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
+
+
 
 function renderPostings(postings) {
   let postingsContainer = document.querySelector("#postings");
   postingsContainer.innerHTML = "";
 
   postings.forEach((posting) => {
-    console.log(posting.resources)
     // Wrapper
     let postingElement = document.createElement("div");
-    postingElement.classList.add(
-      "bg-white",
-      "border",
-      "border-gray-300",
-      "rounded-lg",
-      "p-4",
-      "mb-4",
-      "dark:bg-gray-800",
-      "basis-[46%]",
-      "md:basis-[30%]"
-    );
+    postingElement.classList.add("bg-white","border","border-gray-300","rounded-lg","p-4","mb-4","dark:bg-gray-800","basis-[46%]","md:basis-[30%]");
+
+    let header = document.createElement("div");
+    header.classList.add("flex","justify-end","items-center","mb-2", "gap-2");
+    
+    let closeBtn = document.createElement("button");
+    closeBtn.setAttribute('id', 'd_'+ posting.id);
+    closeBtn.classList.add('px-2','py-1','bg-red-500','text-white','rounded-lg','mb-2','hover:bg-red-600','transition','duration-300','ease-in-out');
+    closeBtn.innerHTML = 'X';
+    closeBtn.addEventListener('click', (e)=>{deletePosting(e)});
+
+    let editBtn = document.createElement("button");
+    editBtn.setAttribute('id', 'e_'+ posting.id);
+    editBtn.classList.add('px-2','py-1','bg-blue-500','text-white','rounded-lg','mb-2','hover:bg-blue-600','transition','duration-300','ease-in-out');
+    editBtn.innerHTML = 'Edit';
+    editBtn.addEventListener('click', (e) => {
+      openingModal(e, posting);
+    });
+
+    header.appendChild(editBtn);
+    header.appendChild(closeBtn);
+
+    
 
     // Group name
     let postingTitle = document.createElement("div");
@@ -130,6 +178,7 @@ function renderPostings(postings) {
     `;
 
     // Append all sections to the posting element
+    postingElement.appendChild(header);
     postingElement.appendChild(postingTitle);
     postingElement.appendChild(postingLocation);
     postingElement.appendChild(postingMembers);
@@ -185,8 +234,7 @@ function addClass() {
   });
 }
 
-const membersInput = document.querySelector("#members");
-const membersArr = [];
+
 
 function addMembers(e) {
   const membersUl = document.querySelector("#membersUl");
@@ -199,7 +247,6 @@ function addMembers(e) {
       const tag = document.createElement("span");
       tag.textContent = membersInput.value;
       membersArr.push(membersInput.value);
-      console.log(membersArr);
       tag.classList.add(
         "border",
         "border-gray-300",
@@ -250,68 +297,61 @@ membersInput.addEventListener("keydown", (e) => {
   addMembers(e);
 });
 
-const imageInput = document.querySelector("#resources");
-
-let resourcesArr = [];
 
 function addResources(sentData) {
   resourcesArr.push(sentData);
-  console.log(resourcesArr);
   const resourcesUl = document.querySelector("#resourcesUl");
   resourcesUl.innerHTML = "";
-  //file name will be name, and href is url
   resourcesArr.forEach((resource) => {
     const tag = document.createElement("a");
     tag.textContent = resource.name;
     tag.href = resource.url;
     tag.target = "_blank";
-    tag.classList.add(
-      "border",
-      "border-gray-300",
-      "rounded-lg",
-      "px-4",
-      "py-2",
-      "relative",
-      "z-10"
-    );
+    tag.classList.add("border", "border-gray-300","rounded-lg", "px-4", "py-2", "relative", "z-10");
 
-    const removeBtn = document.createElement("button");
-    removeBtn.textContent = "x";
-    removeBtn.classList.add(
-      "absolute",
-      "flex",
-      "justify-center",
-      "items-center",
-      "-right-6",
-      "-top-6",
-      "text-red-500",
-      "bg-red-400",
-      "text-black",
-      "w-6",
-      "h-6",
-      "rounded-full",
-      "hover:bg-red-500",
-      "hover:text-white",
-      "transition",
-      "duration-300",
-      "ease-in-out",
-      "z-50"
-    );
-    removeBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const index = resourcesArr.indexOf(tag.textContent);
-      resourcesArr.splice(index, 1);
-      tag.remove();
-    });
-
+    const removeBtn = createXbutton();
     tag.appendChild(removeBtn);
     resourcesUl.appendChild(tag);
   });
 }
 
+function createXbutton(){
+  const removeBtn = document.createElement("button");
+  removeBtn.textContent = "x";
+  removeBtn.classList.add(
+    "absolute",
+    "flex",
+    "justify-center",
+    "items-center",
+    "-right-6",
+    "-top-6",
+    "text-red-500",
+    "bg-red-400",
+    "text-black",
+    "w-6",
+    "h-6",
+    "rounded-full",
+    "hover:bg-red-500",
+    "hover:text-white",
+    "transition",
+    "duration-300",
+    "ease-in-out",
+    "z-50"
+  );
+
+  removeBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const index = resourcesArr.indexOf(tag.textContent);
+    resourcesArr.splice(index, 1);
+    tag.remove();
+  });
+
+  return removeBtn;
+}
+
 imageInput.addEventListener("change", async (e) => {
-  console.log("debugging1");
+
   const file = e.target.files[0];
   if (!file) {
     console.error("No file selected");
@@ -321,17 +361,16 @@ imageInput.addEventListener("change", async (e) => {
   if (file) {
     const formData = new FormData();
     formData.append("file", file);
-    console.log("debugging2");
+
     fetch("/imgUpload", {
       method: "POST",
       body: formData,
     })
       .then((res) => {
-        console.log("debugging3");
+
         return res.json();
       })
       .then((data) => {
-        console.log("debugging4");
         if (data.url.indexOf(" ")) {
           let goodUrl = data.url.replace(/\s/g, "%20");
           const sendingData = {
@@ -367,7 +406,6 @@ function addPosting() {
   let endTime = document.getElementById("endTime").value;
   let topic = document.getElementById("topic").value;
 
-  console.log(members);
   let newPosting = {
     groupName: groupName,
     location: location,
@@ -384,7 +422,6 @@ function addPosting() {
     data: newPosting,
   })
     .then((response) => {
-      console.log(response.data);
       renderPostings(response.data);
     })
     .catch((error) => {

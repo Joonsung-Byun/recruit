@@ -14,8 +14,6 @@ const upload = multer();
 const { createClient } = require("@supabase/supabase-js");
 const supabaseDB = createClient(process.env.SUPABASEURL,process.env.SUPABASEKEY);
 
-
-
 app.get("/", (req, res) => {
   res.sendFile(__dirname, "index.html");
 });
@@ -72,6 +70,26 @@ app.post("/imgUpload", upload.single("file"), async (req, res) => {
   }
 });
 
+app.delete("/postings/:id", async (req, res) => {
+  const deleteID = req.params.id
+  const { data, error } = await supabaseDB.from("postings").delete().eq('id', deleteID);
+
+  console.log('delete success');
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  const {data: selectData, error: selectError} = await supabaseDB.from("postings").select('*');
+
+  if (selectError) {
+    return res.status(500).json({ error: selectError.message });
+  }
+
+  res.status(200).send(selectData);
+
+
+});
 
 
 app.listen(port, () => {
