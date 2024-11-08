@@ -63,7 +63,14 @@ function renderPostings(postings) {
       <h2 class="text-lg font-bold">Members</h2>
       <ul>
     `;
-    isJSON
+
+    if(JSON.parse(posting.members).length == 0){
+      membersHTML += `<li>No members</li>`;
+    } else {
+      JSON.parse(posting.members).forEach((member) => {
+        membersHTML += `<li>${member}</li>`;
+      });
+    }
 
     membersHTML += `</ul>`;
     postingMembers.innerHTML = membersHTML;
@@ -99,13 +106,18 @@ function renderPostings(postings) {
       <h2 class="text-lg font-bold">Resources</h2>
       <ul>
     `;
-    JSON.parse(posting.resources).forEach((resource) => {
+    if(JSON.parse(posting.resources).length == 0){
+      resourcesHTML += `<li>No resources</li>`;
+    } else {
+       JSON.parse(posting.resources).forEach((resource) => {
       resourcesHTML += `
         <li>
           <a href="${resource.url}" target="_blank">${resource.name}</a>
         </li>
       `;
     });
+    }
+
     resourcesHTML += `</ul>`;
     postingResources.innerHTML = resourcesHTML;
 
@@ -259,8 +271,8 @@ function addResources(sentData) {
       "rounded-lg",
       "px-4",
       "py-2",
-      "m-2",
-      "relative"
+      "relative",
+      "z-10"
     );
 
     const removeBtn = document.createElement("button");
@@ -270,8 +282,8 @@ function addResources(sentData) {
       "flex",
       "justify-center",
       "items-center",
-      "-right-4",
-      "-top-4",
+      "-right-6",
+      "-top-6",
       "text-red-500",
       "bg-red-400",
       "text-black",
@@ -282,9 +294,12 @@ function addResources(sentData) {
       "hover:text-white",
       "transition",
       "duration-300",
-      "ease-in-out"
+      "ease-in-out",
+      "z-50"
     );
     removeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       const index = resourcesArr.indexOf(tag.textContent);
       resourcesArr.splice(index, 1);
       tag.remove();
@@ -343,14 +358,13 @@ function addSeconds(time) {
 }
 
 function addPosting() {
-  console.log(membersArr)
+  //check if all fields are filled
+
   let groupName = document.getElementById("name").value;
   let location = document.getElementById("location").value;
-  let members = membersArr
   let date = document.getElementById("date").value;
   let startTime = document.getElementById("startTime").value;
   let endTime = document.getElementById("endTime").value;
-  let resources = document.getElementById("resources").value;
   let topic = document.getElementById("topic").value;
 
   console.log(members);
