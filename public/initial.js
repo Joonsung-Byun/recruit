@@ -11,31 +11,55 @@ let closeModalBtn = document.querySelector("#closeModalBtn");
 
 function openingModal(e, posting){
   editModal.classList.remove("hidden");
-  closeModalBtn.addEventListener("click", () => {
-    editModal.classList.add("hidden");
-  });
-  //okay I git the posting as an object passed in
+  closeModalBtn.addEventListener("click", () => {editModal.classList.add("hidden")});
+
   document.querySelector("#edit_groupName").value = posting.groupName;
   document.querySelector("#edit_location").value = posting.location;
   document.querySelector("#edit_date").value = posting.date;
   document.querySelector("#edit_startTime").value = posting.startTime;
   document.querySelector("#edit_endTime").value = posting.endTime;
   document.querySelector("#edit_topic").value = posting.topic;
-  
+
+  //members
+  const membersUl = document.querySelector("#edit_membersUl");
+  membersUl.innerHTML = "";
+  //멤버들 보여주기
+  posting.members.forEach((member) => {
+    let tag = document.createElement("span");
+    tag.textContent = member;
+    membersUl.appendChild(tag);
+
+    //삭제 기능만들기
+    let editMemberdeleteBtn = document.createElement("button");
+    editMemberdeleteBtn.textContent = "x";
+
+    //클릭시에 
+    editMemberdeleteBtn.addEventListener("click", (e) => {
+      console.log(e.target.parentElement);
+      e.target.parentElement.remove();
+
+      //멤버 배열에서도 삭제
+      posting.members.splice(posting.members.indexOf(e.target.parentElement.textContent), 1);
+    })
+    tag.appendChild(editMemberdeleteBtn);
+  })
+
+  document.querySelector("#saveChange").addEventListener("click", (e) => {editPosting(e, posting)});
 }
 
-function editPosting(e){
-  const id = e.target.id.substr(2);
-  console.log(id);
-  }
-
-
-
+function editPosting(e, posting){
+  e.preventDefault();
+  const id = posting.id;
+}
 
 function getPostings() {
   axios
     .get("/postings")
     .then((response) => {
+      response.data.forEach((posting) => {
+        posting.members = JSON.parse(posting.members);
+        posting.resources = JSON.parse(posting.resources);
+      });
       renderPostings(response.data);
     })
     .catch((error) => {
@@ -48,14 +72,16 @@ function deletePosting(e) {
   axios
     .delete(`/postings/${id}`)
     .then((response) => {
+      response.data.forEach((posting) => {
+        posting.members = JSON.parse(posting.members);
+        posting.resources = JSON.parse(posting.resources);
+      });
       renderPostings(response.data);
     })
     .catch((error) => {
       console.error(error);
     });
 }
-
-
 
 function renderPostings(postings) {
   let postingsContainer = document.querySelector("#postings");
@@ -109,14 +135,16 @@ function renderPostings(postings) {
     postingMembers.classList.add("mb-2");
     let membersHTML = `
       <h2 class="text-lg font-bold">Members</h2>
-      <ul>
+      <ul class="flex gap-2">
     `;
 
-    if(JSON.parse(posting.members).length == 0){
+    if(posting.members.length == 0){
       membersHTML += `<li>No members</li>`;
     } else {
-      JSON.parse(posting.members).forEach((member) => {
-        membersHTML += `<li>${member}</li>`;
+      posting.members.forEach((member) => {
+        membersHTML += `
+          <li> ${ member }  </li>
+         `;
       });
     }
 
@@ -154,16 +182,15 @@ function renderPostings(postings) {
       <h2 class="text-lg font-bold">Resources</h2>
       <ul>
     `;
-    if(JSON.parse(posting.resources).length == 0){
+    if(posting.resources.length == 0){
       resourcesHTML += `<li>No resources</li>`;
     } else {
-       JSON.parse(posting.resources).forEach((resource) => {
-      resourcesHTML += `
-        <li>
-          <a href="${resource.url}" target="_blank">${resource.name}</a>
-        </li>
-      `;
-    });
+      console.log(posting.resources)
+      posting.resources.forEach((resource) => {
+        resourcesHTML += `
+          <li><a href="${resource.url}" target="_blank" class="underline">${resource.name}</a></li>
+        `;
+      })
     }
 
     resourcesHTML += `</ul>`;
@@ -234,8 +261,6 @@ function addClass() {
   });
 }
 
-
-
 function addMembers(e) {
   const membersUl = document.querySelector("#membersUl");
   if (e.key === "Enter") {
@@ -296,7 +321,6 @@ function addMembers(e) {
 membersInput.addEventListener("keydown", (e) => {
   addMembers(e);
 });
-
 
 function addResources(sentData) {
   resourcesArr.push(sentData);
