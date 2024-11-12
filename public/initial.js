@@ -9,9 +9,27 @@ let editModal = document.querySelector("#editModal");
 let closeModalBtn = document.querySelector("#closeModalBtn");
 
 
-function openingModal(e, posting){
+
+function openingModal(e, posting) {
   editModal.classList.remove("hidden");
-  closeModalBtn.addEventListener("click", () => {editModal.classList.add("hidden")});
+
+  document.querySelector("#edit_members").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      renderEditarrays(document.querySelector("#edit_membersUl"),posting.members,document.querySelector("#edit_members"), e.target.value, "members");
+    }
+  });
+
+  document.querySelector("#edit_resources").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      renderEditarrays(document.querySelector("#edit_resourcesUl"),posting.resources,document.querySelector("#edit_resources"), e.target.value, "resources");
+    }
+  });
+
+  closeModalBtn.addEventListener("click", () =>
+    editModal.classList.add("hidden")
+  );
 
   document.querySelector("#edit_groupName").value = posting.groupName;
   document.querySelector("#edit_location").value = posting.location;
@@ -24,51 +42,27 @@ function openingModal(e, posting){
   const membersUl = document.querySelector("#edit_membersUl");
   membersUl.innerHTML = "";
   //멤버들 보여주기
-  posting.members.forEach((member) => {
-    let tag = document.createElement("span");
-    tag.textContent = member;
-    membersUl.appendChild(tag);
+  renderEditarrays(document.querySelector("#edit_membersUl"),posting.members,document.querySelector("#edit_members"), e.target.value, "members");
+  //resources
+  const resourcesUl = document.querySelector("#edit_resourcesUl");
+  resourcesUl.innerHTML = "";
 
-    //삭제 기능만들기
-    let editMemberdeleteBtn = document.createElement("button");
-    editMemberdeleteBtn.textContent = "x";
+  //리소스들 보여주기
+  renderEditarrays(document.querySelector("#edit_resourcesUl"),posting.resources,document.querySelector("#edit_resources"), e.target.value, "resources");
 
-    //클릭시에 
-    editMemberdeleteBtn.addEventListener("click", (e) => {
-      console.log(e.target.parentElement);
-      e.target.parentElement.remove();
-
-      //멤버 배열에서도 삭제
-      posting.members.splice(posting.members.indexOf(e.target.parentElement.textContent), 1);
-    })
-    tag.appendChild(editMemberdeleteBtn);
-  })
-
-  document.querySelector("#saveChange").addEventListener("click", (e) => {editPosting(e, posting)});
+  document.querySelector("#saveChange").addEventListener("click", (e) => {
+    editPosting(e, posting);
+  });
 }
 
-function editPosting(e, posting){
+function editPosting(e, posting) {
   e.preventDefault();
   const id = posting.id;
 }
 
-function getPostings() {
-  axios
-    .get("/postings")
-    .then((response) => {
-      response.data.forEach((posting) => {
-        posting.members = JSON.parse(posting.members);
-        posting.resources = JSON.parse(posting.resources);
-      });
-      renderPostings(response.data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
 
 function deletePosting(e) {
-  const id = e.target.id.substr(2)
+  const id = e.target.id.substr(2);
   axios
     .delete(`/postings/${id}`)
     .then((response) => {
@@ -87,32 +81,71 @@ function renderPostings(postings) {
   let postingsContainer = document.querySelector("#postings");
   postingsContainer.innerHTML = "";
 
+  console.log(postings);
   postings.forEach((posting) => {
     // Wrapper
     let postingElement = document.createElement("div");
-    postingElement.classList.add("bg-white","border","border-gray-300","rounded-lg","p-4","mb-4","dark:bg-gray-800","basis-[46%]","md:basis-[30%]");
+    postingElement.classList.add(
+      "bg-white",
+      "border",
+      "border-gray-300",
+      "rounded-lg",
+      "p-4",
+      "mb-4",
+      "dark:bg-gray-800",
+      "basis-[46%]",
+      "md:basis-[30%]"
+    );
 
     let header = document.createElement("div");
-    header.classList.add("flex","justify-end","items-center","mb-2", "gap-2");
-    
+    header.classList.add(
+      "flex",
+      "justify-end",
+      "items-center",
+      "mb-2",
+      "gap-2"
+    );
+
     let closeBtn = document.createElement("button");
-    closeBtn.setAttribute('id', 'd_'+ posting.id);
-    closeBtn.classList.add('px-2','py-1','bg-red-500','text-white','rounded-lg','mb-2','hover:bg-red-600','transition','duration-300','ease-in-out');
-    closeBtn.innerHTML = 'X';
-    closeBtn.addEventListener('click', (e)=>{deletePosting(e)});
+    closeBtn.setAttribute("id", "d_" + posting.id);
+    closeBtn.classList.add(
+      "px-2",
+      "py-1",
+      "bg-red-500",
+      "text-white",
+      "rounded-lg",
+      "mb-2",
+      "hover:bg-red-600",
+      "transition",
+      "duration-300",
+      "ease-in-out"
+    );
+    closeBtn.innerHTML = "X";
+    closeBtn.addEventListener("click", (e) => {
+      deletePosting(e);
+    });
 
     let editBtn = document.createElement("button");
-    editBtn.setAttribute('id', 'e_'+ posting.id);
-    editBtn.classList.add('px-2','py-1','bg-blue-500','text-white','rounded-lg','mb-2','hover:bg-blue-600','transition','duration-300','ease-in-out');
-    editBtn.innerHTML = 'Edit';
-    editBtn.addEventListener('click', (e) => {
+    editBtn.setAttribute("id", "e_" + posting.id);
+    editBtn.classList.add(
+      "px-2",
+      "py-1",
+      "bg-blue-500",
+      "text-white",
+      "rounded-lg",
+      "mb-2",
+      "hover:bg-blue-600",
+      "transition",
+      "duration-300",
+      "ease-in-out"
+    );
+    editBtn.innerHTML = "Edit";
+    editBtn.addEventListener("click", (e) => {
       openingModal(e, posting);
     });
 
     header.appendChild(editBtn);
     header.appendChild(closeBtn);
-
-    
 
     // Group name
     let postingTitle = document.createElement("div");
@@ -138,12 +171,13 @@ function renderPostings(postings) {
       <ul class="flex gap-2">
     `;
 
-    if(posting.members.length == 0){
+    if (posting.members.length == 0) {
       membersHTML += `<li>No members</li>`;
     } else {
+      console.log(posting.members);
       posting.members.forEach((member) => {
         membersHTML += `
-          <li> ${ member }  </li>
+          <li> ${member}  </li>
          `;
       });
     }
@@ -182,15 +216,15 @@ function renderPostings(postings) {
       <h2 class="text-lg font-bold">Resources</h2>
       <ul>
     `;
-    if(posting.resources.length == 0){
+    if (posting.resources.length == 0) {
       resourcesHTML += `<li>No resources</li>`;
     } else {
-      console.log(posting.resources)
+      console.log(posting.resources);
       posting.resources.forEach((resource) => {
         resourcesHTML += `
           <li><a href="${resource.url}" target="_blank" class="underline">${resource.name}</a></li>
         `;
-      })
+      });
     }
 
     resourcesHTML += `</ul>`;
@@ -220,46 +254,6 @@ function renderPostings(postings) {
   });
 }
 
-function addClass() {
-  let elements = document.querySelectorAll("input");
-  elements.forEach((element) => {
-    if (element.name == "resources") {
-      return;
-    } else {
-      element.classList.add(
-        "bg-gray-50",
-        "border",
-        "border-gray-300",
-        "text-gray-900",
-        "text-sm",
-        "rounded-lg",
-        "focus:ring-primary-600",
-        "focus:border-primary-600",
-        "block",
-        "w-full",
-        "p-2.5",
-        "dark:bg-gray-700",
-        "dark:border-gray-600",
-        "dark:placeholder-gray-400",
-        "dark:text-white",
-        "dark:focus:ring-primary-500"
-      );
-    }
-  });
-
-  let labels = document.querySelectorAll("label");
-  labels.forEach((label) => {
-    //block mb-2 text-sm font-medium text-gray-900 dark:text-white
-    label.classList.add(
-      "block",
-      "mb-2",
-      "text-sm",
-      "font-medium",
-      "text-gray-900",
-      "dark:text-white"
-    );
-  });
-}
 
 function addMembers(e) {
   const membersUl = document.querySelector("#membersUl");
@@ -331,51 +325,25 @@ function addResources(sentData) {
     tag.textContent = resource.name;
     tag.href = resource.url;
     tag.target = "_blank";
-    tag.classList.add("border", "border-gray-300","rounded-lg", "px-4", "py-2", "relative", "z-10");
+    tag.classList.add(
+      "border",
+      "border-gray-300",
+      "rounded-lg",
+      "px-4",
+      "py-2",
+      "relative",
+      "z-10"
+    );
 
-    const removeBtn = createXbutton();
+    const removeBtn = createXbutton(tag, resourcesArr);
     tag.appendChild(removeBtn);
     resourcesUl.appendChild(tag);
   });
 }
 
-function createXbutton(){
-  const removeBtn = document.createElement("button");
-  removeBtn.textContent = "x";
-  removeBtn.classList.add(
-    "absolute",
-    "flex",
-    "justify-center",
-    "items-center",
-    "-right-6",
-    "-top-6",
-    "text-red-500",
-    "bg-red-400",
-    "text-black",
-    "w-6",
-    "h-6",
-    "rounded-full",
-    "hover:bg-red-500",
-    "hover:text-white",
-    "transition",
-    "duration-300",
-    "ease-in-out",
-    "z-50"
-  );
 
-  removeBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const index = resourcesArr.indexOf(tag.textContent);
-    resourcesArr.splice(index, 1);
-    tag.remove();
-  });
-
-  return removeBtn;
-}
 
 imageInput.addEventListener("change", async (e) => {
-
   const file = e.target.files[0];
   if (!file) {
     console.error("No file selected");
@@ -391,7 +359,6 @@ imageInput.addEventListener("change", async (e) => {
       body: formData,
     })
       .then((res) => {
-
         return res.json();
       })
       .then((data) => {
@@ -416,13 +383,9 @@ imageInput.addEventListener("change", async (e) => {
   }
 });
 
-function addSeconds(time) {
-  return time + ":00";
-}
+
 
 function addPosting() {
-  //check if all fields are filled
-
   let groupName = document.getElementById("name").value;
   let location = document.getElementById("location").value;
   let date = document.getElementById("date").value;
@@ -446,6 +409,26 @@ function addPosting() {
     data: newPosting,
   })
     .then((response) => {
+      response.data.forEach((posting) => {
+        posting.members = JSON.parse(posting.members);
+        posting.resources = JSON.parse(posting.resources);
+      });
+      renderPostings(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+
+function getPostings() {
+  axios
+    .get("/postings")
+    .then((response) => {
+      response.data.forEach((posting) => {
+        posting.members = JSON.parse(posting.members);
+        posting.resources = JSON.parse(posting.resources);
+      });
       renderPostings(response.data);
     })
     .catch((error) => {
