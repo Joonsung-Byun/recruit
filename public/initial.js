@@ -38,16 +38,12 @@ function openingModal(e, posting) {
   document.querySelector("#edit_endTime").value = posting.endTime;
   document.querySelector("#edit_topic").value = posting.topic;
 
-  //members
   const membersUl = document.querySelector("#edit_membersUl");
   membersUl.innerHTML = "";
-  //멤버들 보여주기
   renderEditarrays(document.querySelector("#edit_membersUl"),posting.members,document.querySelector("#edit_members"), e.target.value, "members");
-  //resources
   const resourcesUl = document.querySelector("#edit_resourcesUl");
   resourcesUl.innerHTML = "";
 
-  //리소스들 보여주기
   renderEditarrays(document.querySelector("#edit_resourcesUl"),posting.resources,document.querySelector("#edit_resources"), e.target.value, "resources");
 
   document.querySelector("#saveChange").addEventListener("click", (e) => {
@@ -83,7 +79,6 @@ function renderPostings(postings) {
 
   console.log(postings);
   postings.forEach((posting) => {
-    // Wrapper
     let postingElement = document.createElement("div");
     postingElement.classList.add(
       "bg-white",
@@ -277,33 +272,7 @@ function addMembers(e) {
       );
 
       // remove btn -> <svg class="h-8 w-8 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
-      const removeBtn = document.createElement("button");
-      removeBtn.textContent = "x";
-      removeBtn.classList.add(
-        "absolute",
-        "flex",
-        "justify-center",
-        "items-center",
-        "-right-4",
-        "-top-4",
-        "text-red-500",
-        "bg-red-400",
-        "text-black",
-        "w-6",
-        "h-6",
-        "rounded-full",
-        "hover:bg-red-500",
-        "hover:text-white",
-        "transition",
-        "duration-300",
-        "ease-in-out"
-      );
-      removeBtn.addEventListener("click", (e) => {
-        const index = membersArr.indexOf(tag.textContent);
-        membersArr.splice(index, 1);
-        tag.remove();
-      });
-
+      const removeBtn = createXbutton( "members", membersArr);
       tag.appendChild(removeBtn);
 
       membersUl.appendChild(tag);
@@ -335,7 +304,7 @@ function addResources(sentData) {
       "z-10"
     );
 
-    const removeBtn = createXbutton(tag, resourcesArr);
+    const removeBtn = createXbutton('resources', resourcesArr);
     tag.appendChild(removeBtn);
     resourcesUl.appendChild(tag);
   });
