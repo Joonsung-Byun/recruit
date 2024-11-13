@@ -87,10 +87,25 @@ app.delete("/postings/:id", async (req, res) => {
   }
 
   res.status(200).send(selectData);
-
-
 });
 
+app.put("/postings/:id", async (req, res) => {
+  const id = req.params.id;
+
+  const { data, error } = await supabaseDB.from("postings").update(req.body).eq('id', id);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  const {data: selectData, selectError} = await supabaseDB.from("postings").select('*');
+
+  if (selectError) {
+    return res.status(500).json({ error: selectError.message });
+  }
+
+  res.status(200).send(selectData);
+})
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

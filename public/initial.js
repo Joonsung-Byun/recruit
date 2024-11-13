@@ -40,20 +40,57 @@ function openingModal(e, posting) {
 
   const membersUl = document.querySelector("#edit_membersUl");
   membersUl.innerHTML = "";
-  renderEditarrays(document.querySelector("#edit_membersUl"),posting.members,document.querySelector("#edit_members"), e.target.value, "members");
+  renderEditarrays(document.querySelector("#edit_membersUl"), posting.members, document.querySelector("#edit_members"), e.target.value, "members");
   const resourcesUl = document.querySelector("#edit_resourcesUl");
   resourcesUl.innerHTML = "";
 
-  renderEditarrays(document.querySelector("#edit_resourcesUl"),posting.resources,document.querySelector("#edit_resources"), e.target.value, "resources");
+  renderEditarrays(document.querySelector("#edit_resourcesUl"), posting.resources, document.querySelector("#edit_resources"), e.target.value, "resources");
 
   document.querySelector("#saveChange").addEventListener("click", (e) => {
-    editPosting(e, posting);
+    editPosting(e, posting, posting.members, posting.resources,);
   });
 }
 
-function editPosting(e, posting) {
+function editPosting(e, posting, editMembersArr, editResourcesArr) {
   e.preventDefault();
   const id = posting.id;
+
+  let groupName = document.getElementById("edit_groupName").value;
+  let location = document.getElementById("edit_location").value;
+  let date = document.getElementById("edit_date").value;
+  let startTime = document.getElementById("edit_startTime").value;
+  let endTime = document.getElementById("edit_endTime").value;
+  let topic = document.getElementById("edit_topic").value;
+
+  console.log(groupName, location, date, startTime, endTime, topic, editMembersArr, editResourcesArr);
+
+  let newPosting = {
+    groupName: groupName,
+    location: location,
+    members: editMembersArr,
+    date: date,
+    startTime: addSeconds(startTime),
+    endTime: addSeconds(endTime),
+    resources: editResourcesArr,
+    topic: topic,
+  };
+
+  axios({
+    method: "put",
+    url: `/postings/${id}`,
+    data: newPosting,
+  })
+    .then((response) => {
+      response.data.forEach((posting) => {
+        posting.members = JSON.parse(posting.members);
+        posting.resources = JSON.parse(posting.resources);
+      });
+      renderPostings(response.data);
+      editModal.classList.add("hidden");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
 
 
@@ -310,9 +347,7 @@ function addResources(sentData) {
   });
 }
 
-
-
-imageInput.addEventListener("change", async (e) => {
+async function uploadImage(e) {
   const file = e.target.files[0];
   if (!file) {
     console.error("No file selected");
@@ -322,15 +357,17 @@ imageInput.addEventListener("change", async (e) => {
   if (file) {
     const formData = new FormData();
     formData.append("file", file);
-
+    console.log('debuggin1')
     fetch("/imgUpload", {
       method: "POST",
       body: formData,
     })
       .then((res) => {
+        console.log('debuggin2')
         return res.json();
       })
       .then((data) => {
+        
         if (data.url.indexOf(" ")) {
           let goodUrl = data.url.replace(/\s/g, "%20");
           const sendingData = {
@@ -350,6 +387,10 @@ imageInput.addEventListener("change", async (e) => {
         console.error(err);
       });
   }
+}
+
+imageInput.addEventListener("change", async (e) => {
+  uploadImage(e);
 });
 
 
