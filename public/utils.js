@@ -1,6 +1,7 @@
 function renderEditarrays(ul, array, input, value, role) {
     ul.innerHTML = "";
     if (role === "members") {
+
       if (value) array.push(value);
       array.forEach((member) => {
         let tag = document.createElement("span");
@@ -11,6 +12,7 @@ function renderEditarrays(ul, array, input, value, role) {
         tag.appendChild(editMemberdeleteBtn);
       });
       input.value = "";
+      return;
     } else {
         array.forEach((resource) => {
         let tag = document.createElement("a");
@@ -28,6 +30,7 @@ function renderEditarrays(ul, array, input, value, role) {
       editInput.addEventListener("change", async (e) => {
         uploadEditFile(e, array);
       });
+      return
     }
 }
 

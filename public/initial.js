@@ -4,32 +4,20 @@ let resourcesArr = [];
 const membersInput = document.querySelector("#members");
 const membersArr = [];
 
+let wowBtn = document.querySelector("#wowBtn");
+wowBtn.addEventListener("click", () => {
+  editModal.classList.add("hidden");
+  //saveBtn의 만약 이벤트 리스너가 달려있다면, 이벤트리스너 제거
+  saveChange.removeEventListener("click", editPosting);
+});
 let toggleButton = document.querySelector("#toggleButton");
 let editModal = document.querySelector("#editModal");
-let closeModalBtn = document.querySelector("#closeModalBtn");
 
 
 
 function openingModal(e, posting) {
+  console.log(posting);
   editModal.classList.remove("hidden");
-
-  document.querySelector("#edit_members").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      renderEditarrays(document.querySelector("#edit_membersUl"), posting.members, document.querySelector("#edit_members"), e.target.value, "members");
-    }
-  });
-
-  document.querySelector("#edit_resources").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      renderEditarrays(document.querySelector("#edit_resourcesUl"),posting.resources,document.querySelector("#edit_resources"), e.target.value, "resources");
-    }
-  });
-
-  closeModalBtn.addEventListener("click", () =>
-    editModal.classList.add("hidden")
-  );
 
   document.querySelector("#edit_groupName").value = posting.groupName;
   document.querySelector("#edit_location").value = posting.location;
@@ -38,20 +26,41 @@ function openingModal(e, posting) {
   document.querySelector("#edit_endTime").value = posting.endTime;
   document.querySelector("#edit_topic").value = posting.topic;
 
+  //members 막타
   const membersUl = document.querySelector("#edit_membersUl");
   membersUl.innerHTML = "";
-  renderEditarrays(document.querySelector("#edit_membersUl"), posting.members, document.querySelector("#edit_members"), e.target.value, "members");
-  const resourcesUl = document.querySelector("#edit_resourcesUl");
-  resourcesUl.innerHTML = "";
+  let editMembersArr = []
+  editMembersArr = [...posting.members];
 
-  renderEditarrays(document.querySelector("#edit_resourcesUl"), posting.resources, document.querySelector("#edit_resources"), e.target.value, "resources");
+  editMembersArr.forEach((member) => {
+    const tag = document.createElement("span");
+    tag.textContent = member;
+    membersUl.appendChild(tag);
+  });
+
+  let editMembersInput = document.querySelector("#edit_members");
+  editMembersInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+        const tag = document.createElement("span");
+        tag.textContent = editMembersInput.value;
+        editMembersArr.push(editMembersInput.value);
+        membersUl.innerHTML = "";
+        editMembersArr.forEach((member) => {
+          const tag = document.createElement("span");
+          tag.textContent = member;
+          membersUl.appendChild(tag);
+        });
+    }
+  });
 
   document.querySelector("#saveChange").addEventListener("click", (e) => {
-    editPosting(e, posting, posting.members, posting.resources,);
+    editPosting(e, posting, editMembersArr);
   });
 }
 
-function editPosting(e, posting, editMembersArr, editResourcesArr) {
+function editPosting(e, posting, editMembersArr) {
+  console.log(e.target);
   e.preventDefault();
   const id = posting.id;
 
@@ -62,8 +71,6 @@ function editPosting(e, posting, editMembersArr, editResourcesArr) {
   let endTime = document.getElementById("edit_endTime").value;
   let topic = document.getElementById("edit_topic").value;
 
-  console.log(groupName, location, date, startTime, endTime, topic, editMembersArr, editResourcesArr);
-
   let newPosting = {
     groupName: groupName,
     location: location,
@@ -71,10 +78,10 @@ function editPosting(e, posting, editMembersArr, editResourcesArr) {
     date: date,
     startTime: (startTime),
     endTime: (endTime),
-    resources: editResourcesArr,
     topic: topic,
   };
 
+  
   axios({
     method: "put",
     url: `/postings/${id}`,
@@ -87,23 +94,6 @@ function editPosting(e, posting, editMembersArr, editResourcesArr) {
       });
       renderPostings(response.data);
       editModal.classList.add("hidden");
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
-
-
-function deletePosting(e) {
-  const id = e.target.id.substr(2);
-  axios
-    .delete(`/postings/${id}`)
-    .then((response) => {
-      response.data.forEach((posting) => {
-        posting.members = JSON.parse(posting.members);
-        posting.resources = JSON.parse(posting.resources);
-      });
-      renderPostings(response.data);
     })
     .catch((error) => {
       console.error(error);
@@ -204,7 +194,6 @@ function renderPostings(postings) {
     if (posting.members.length == 0) {
       membersHTML += `<li>No members</li>`;
     } else {
-      console.log(posting.members);
       posting.members.forEach((member) => {
         membersHTML += `
           <li> ${member}  </li>
@@ -296,6 +285,26 @@ function renderPostings(postings) {
     // })
   });
 }
+
+
+
+function deletePosting(e) {
+  const id = e.target.id.substr(2);
+  axios
+    .delete(`/postings/${id}`)
+    .then((response) => {
+      response.data.forEach((posting) => {
+        posting.members = JSON.parse(posting.members);
+        posting.resources = JSON.parse(posting.resources);
+      });
+      renderPostings(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+
 
 
 function addMembers(e) {
