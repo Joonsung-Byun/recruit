@@ -16,7 +16,7 @@ function openingModal(e, posting) {
   document.querySelector("#edit_members").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      renderEditarrays(document.querySelector("#edit_membersUl"),posting.members,document.querySelector("#edit_members"), e.target.value, "members");
+      renderEditarrays(document.querySelector("#edit_membersUl"), posting.members, document.querySelector("#edit_members"), e.target.value, "members");
     }
   });
 
@@ -113,8 +113,6 @@ function deletePosting(e) {
 function renderPostings(postings) {
   let postingsContainer = document.querySelector("#postings");
   postingsContainer.innerHTML = "";
-
-  console.log(postings);
   postings.forEach((posting) => {
     let postingElement = document.createElement("div");
     postingElement.classList.add(
@@ -303,6 +301,7 @@ function renderPostings(postings) {
 function addMembers(e) {
   const membersUl = document.querySelector("#membersUl");
   if (e.key === "Enter") {
+    console.log('enter')
     if (membersArr.includes(membersInput.value)) {
       alert("You already added this member");
       membersInput.value = "";
@@ -335,13 +334,15 @@ membersInput.addEventListener("keydown", (e) => {
   addMembers(e);
 });
 
+
+
 function addResources(sentData) {
-  if(resourcesArr.some(resource => resource.name === sentData.name)){
+  if(resourcesArr.some(resource => resource.name === sentData.name)) {
     alert("You already added this resource");
     return;
   }
 
-
+  
   resourcesArr.push(sentData);
   const resourcesUl = document.querySelector("#resourcesUl");
   resourcesUl.innerHTML = "";
@@ -376,17 +377,14 @@ async function uploadImage(e) {
   if (file) {
     const formData = new FormData();
     formData.append("file", file);
-    console.log('debuggin1')
     fetch("/imgUpload", {
       method: "POST",
       body: formData,
     })
       .then((res) => {
-        console.log('debuggin2')
         return res.json();
       })
       .then((data) => {
-        
         if (data.url.indexOf(" ")) {
           let goodUrl = data.url.replace(/\s/g, "%20");
           const sendingData = {
@@ -410,11 +408,25 @@ async function uploadImage(e) {
 
 imageInput.addEventListener("change", async (e) => {
   uploadImage(e);
+  e.target.value = "";
 });
 
 
 
 function addPosting() {
+  //validate -> groupName, location, date, startTime, endTime, topic are required
+  if (
+    document.getElementById("name").value === "" ||
+    document.getElementById("location").value === "" ||
+    document.getElementById("date").value === "" ||
+    document.getElementById("startTime").value === "" ||
+    document.getElementById("endTime").value === "" ||
+    document.getElementById("topic").value === ""
+  ) {
+    alert("Please fill out all required fields");
+    return;
+  }
+
   let groupName = document.getElementById("name").value;
   let location = document.getElementById("location").value;
   let date = document.getElementById("date").value;

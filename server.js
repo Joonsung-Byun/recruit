@@ -56,7 +56,6 @@ app.post("/imgUpload", upload.single("file"), async (req, res) => {
       });
 
     if (error) {
-      console.error("Error uploading image:", error);
       return res.status(500).send("Error uploading image.");
     } else {
       res.json({
