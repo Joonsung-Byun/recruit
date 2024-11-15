@@ -29,6 +29,7 @@ app.post("/postings", async (req, res) => {
       .insert(req.body);
 
   if (insertError) {
+    console.log(insertError)
     console.log(insertError.message);
       return res.status(500).json({ error: insertError.message });
   }
@@ -90,22 +91,24 @@ app.delete("/postings/:id", async (req, res) => {
 });
 
 app.put("/postings/:id", async (req, res) => {
+
   const id = req.params.id;
-
+  console.log(req.body.startTime)
   const { data, error } = await supabaseDB.from("postings").update(req.body).eq('id', id);
-
   if (error) {
+    console.log(error)
     return res.status(500).json({ error: error.message });
   }
 
-  const {data: selectData, selectError} = await supabaseDB.from("postings").select('*');
+  const {data: selectData, error:selectError} = await supabaseDB.from("postings").select('*');
+
 
   if (selectError) {
     return res.status(500).json({ error: selectError.message });
   }
-
   res.status(200).send(selectData);
 })
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

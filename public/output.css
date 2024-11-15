@@ -639,16 +639,8 @@ video {
   right: -1rem;
 }
 
-.-right-6 {
-  right: -1.5rem;
-}
-
 .-top-4 {
   top: -1rem;
-}
-
-.-top-6 {
-  top: -1.5rem;
 }
 
 .end-2\.5 {
@@ -776,6 +768,10 @@ video {
   flex-basis: 46%;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .flex-wrap {
   flex-wrap: wrap;
 }
@@ -798,6 +794,10 @@ video {
 
 .gap-2 {
   gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
 }
 
 .gap-4 {
@@ -964,11 +964,6 @@ video {
 
 .font-semibold {
   font-weight: 600;
-}
-
-.text-black {
-  --tw-text-opacity: 1;
-  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
 .text-gray-400 {

@@ -29,8 +29,9 @@
                         </div>
                         <div class="w-full">
                             <label for="members">Members</label>
-                            <input type="text" name="members" id="members" placeholder="hit enter after type one member">
-                            <div id="membersUl" class="mt-4">
+                            <input type="text" name="members" id="members"
+                                placeholder="hit enter after type one member">
+                            <div id="membersUl" class="mt-4 flex flex-wrap gap-3">
 
                             </div>
                         </div>
@@ -51,7 +52,7 @@
                         <div class="sm:col-span-2">
                             <label for="resources">Resources Upload</label>
                             <input type="file" name="resources" id="resources">
-                            <div id="resourcesUl" class="mt-4 flex gap-4">
+                            <div id="resourcesUl" class="mt-4 flex flex-wrap gap-4">
 
                             </div>
                         </div>
@@ -63,7 +64,7 @@
                     </div>
                     <button id="submitBtn"
                         class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
-                        Add product
+                        Add Posting
                     </button>
                 </div>
             </div>
@@ -79,12 +80,13 @@
 
     </main>
 
-    
+
     <custom-modal></custom-modal>
 
 
     <!--axios cdn-->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/downloadjs/1.4.8/download.min.js"></script>
     <script src="/utils.js"></script>
     <script src="/modal.js"></script>
     <script type="module" src="/initial.js"></script>

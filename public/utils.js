@@ -137,9 +137,10 @@ function addClass() {
 }
 
 function createXbutton(role, array) {
-  const removeBtn = document.createElement("button");
+  const removeBtn = document.createElement("img");
+  removeBtn.src = "/images/x.jpg";
   
-  removeBtn.classList.add("absolute","flex","justify-center","items-center","-right-6","-top-6","text-red-500","bg-red-400","w-6","h-6","rounded-full","hover:bg-red-500","hover:text-white","duration-300","ease-in-out","z-50","text-white", "transition");
+  removeBtn.classList.add("absolute","flex","justify-center","items-center","-right-4","-top-4","w-6","h-6","rounded-full","z-50", "cursor-pointer");
 
   if(role === "resources") {
     console.log(array)
@@ -162,6 +163,13 @@ function createXbutton(role, array) {
   return removeBtn;
 }
 
-function addSeconds(time) {
-  return time + ":00";
-}
+  async function downloadFile(resource){
+    console.log(resource)
+    let url = resource.href;
+    const result = await fetch(url); 
+    const file = await result.blob();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(file);
+    link.download = resource.textContent;
+    link.click();
+  }

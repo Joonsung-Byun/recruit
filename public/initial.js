@@ -69,8 +69,8 @@ function editPosting(e, posting, editMembersArr, editResourcesArr) {
     location: location,
     members: editMembersArr,
     date: date,
-    startTime: addSeconds(startTime),
-    endTime: addSeconds(endTime),
+    startTime: (startTime),
+    endTime: (endTime),
     resources: editResourcesArr,
     topic: topic,
   };
@@ -251,16 +251,23 @@ function renderPostings(postings) {
     if (posting.resources.length == 0) {
       resourcesHTML += `<li>No resources</li>`;
     } else {
-      console.log(posting.resources);
       posting.resources.forEach((resource) => {
         resourcesHTML += `
-          <li><a href="${resource.url}" target="_blank" class="underline">${resource.name}</a></li>
+          <li>
+            <a 
+            href="${resource.url}" 
+            target="_blank" 
+            onclick="downloadFile(this)"
+            class="underline resourceList">${resource.name}</a>
+          </li>
         `;
       });
     }
 
     resourcesHTML += `</ul>`;
     postingResources.innerHTML = resourcesHTML;
+
+
 
     // Topic
     let postingTopic = document.createElement("div");
@@ -283,6 +290,12 @@ function renderPostings(postings) {
 
     // Append the posting element to the container
     postingsContainer.appendChild(postingElement);
+    // document.querySelectorAll(".resourceList").forEach((resource) => {
+    //   resource.addEventListener("click", (e) => {
+    //     e.preventDefault();
+    //     downloadFile(resource);
+    //   });
+    // })
   });
 }
 
@@ -323,6 +336,12 @@ membersInput.addEventListener("keydown", (e) => {
 });
 
 function addResources(sentData) {
+  if(resourcesArr.some(resource => resource.name === sentData.name)){
+    alert("You already added this resource");
+    return;
+  }
+
+
   resourcesArr.push(sentData);
   const resourcesUl = document.querySelector("#resourcesUl");
   resourcesUl.innerHTML = "";
@@ -408,8 +427,8 @@ function addPosting() {
     location: location,
     members: membersArr,
     date: date,
-    startTime: addSeconds(startTime),
-    endTime: addSeconds(endTime),
+    startTime: (startTime),
+    endTime: (endTime),
     resources: resourcesArr,
     topic: topic,
   };
