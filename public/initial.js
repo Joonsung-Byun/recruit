@@ -4,142 +4,20 @@ let resourcesArr = [];
 const membersInput = document.querySelector("#members");
 const membersArr = [];
 
-let wowBtn = document.querySelector("#wowBtn");
-wowBtn.addEventListener("click", () => {
-  editModal.classList.add("hidden");
-  //saveBtn의 만약 이벤트 리스너가 달려있다면, 이벤트리스너 제거
-  saveChange.removeEventListener("click", editPosting);
-});
-let toggleButton = document.querySelector("#toggleButton");
-let editModal = document.querySelector("#editModal");
-
-
-
-function openingModal(e, posting) {
-  console.log(posting);
-  editModal.classList.remove("hidden");
-
-  document.querySelector("#edit_groupName").value = posting.groupName;
-  document.querySelector("#edit_location").value = posting.location;
-  document.querySelector("#edit_date").value = posting.date;
-  document.querySelector("#edit_startTime").value = posting.startTime;
-  document.querySelector("#edit_endTime").value = posting.endTime;
-  document.querySelector("#edit_topic").value = posting.topic;
-
-  //members 막타
-  const membersUl = document.querySelector("#edit_membersUl");
-  membersUl.innerHTML = "";
-  let editMembersArr = []
-  editMembersArr = [...posting.members];
-
-  editMembersArr.forEach((member) => {
-    const tag = document.createElement("span");
-    tag.textContent = member;
-    membersUl.appendChild(tag);
-  });
-
-  let editMembersInput = document.querySelector("#edit_members");
-  editMembersInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-        const tag = document.createElement("span");
-        tag.textContent = editMembersInput.value;
-        editMembersArr.push(editMembersInput.value);
-        membersUl.innerHTML = "";
-        editMembersArr.forEach((member) => {
-          const tag = document.createElement("span");
-          tag.textContent = member;
-          membersUl.appendChild(tag);
-        });
-    }
-  });
-
-  document.querySelector("#saveChange").addEventListener("click", (e) => {
-    editPosting(e, posting, editMembersArr);
-  });
-}
-
-function editPosting(e, posting, editMembersArr) {
-  console.log(e.target);
-  e.preventDefault();
-  const id = posting.id;
-
-  let groupName = document.getElementById("edit_groupName").value;
-  let location = document.getElementById("edit_location").value;
-  let date = document.getElementById("edit_date").value;
-  let startTime = document.getElementById("edit_startTime").value;
-  let endTime = document.getElementById("edit_endTime").value;
-  let topic = document.getElementById("edit_topic").value;
-
-  let newPosting = {
-    groupName: groupName,
-    location: location,
-    members: editMembersArr,
-    date: date,
-    startTime: (startTime),
-    endTime: (endTime),
-    topic: topic,
-  };
-
-  
-  axios({
-    method: "put",
-    url: `/postings/${id}`,
-    data: newPosting,
-  })
-    .then((response) => {
-      response.data.forEach((posting) => {
-        posting.members = JSON.parse(posting.members);
-        posting.resources = JSON.parse(posting.resources);
-      });
-      renderPostings(response.data);
-      editModal.classList.add("hidden");
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
 
 function renderPostings(postings) {
   let postingsContainer = document.querySelector("#postings");
   postingsContainer.innerHTML = "";
   postings.forEach((posting) => {
     let postingElement = document.createElement("div");
-    postingElement.classList.add(
-      "bg-white",
-      "border",
-      "border-gray-300",
-      "rounded-lg",
-      "p-4",
-      "mb-4",
-      "dark:bg-gray-800",
-      "basis-[46%]",
-      "md:basis-[30%]"
-    );
+    postingElement.classList.add("bg-white","border","border-gray-300","rounded-lg","p-4","mb-4","dark:bg-gray-800","basis-[46%]","md:basis-[30%]");
 
     let header = document.createElement("div");
-    header.classList.add(
-      "flex",
-      "justify-end",
-      "items-center",
-      "mb-2",
-      "gap-2"
-    );
+    header.classList.add("flex","justify-end","items-center","mb-2","gap-2");
 
     let closeBtn = document.createElement("button");
     closeBtn.setAttribute("id", "d_" + posting.id);
-    closeBtn.classList.add(
-      "px-2",
-      "py-1",
-      "bg-red-500",
-      "text-white",
-      "rounded-lg",
-      "mb-2",
-      "hover:bg-red-600",
-      "transition",
-      "duration-300",
-      "ease-in-out"
-    );
+    closeBtn.classList.add("px-2","py-1","bg-red-500","text-white","rounded-lg","mb-2","hover:bg-red-600","transition","duration-300","ease-in-out");
     closeBtn.innerHTML = "X";
     closeBtn.addEventListener("click", (e) => {
       deletePosting(e);
@@ -147,22 +25,8 @@ function renderPostings(postings) {
 
     let editBtn = document.createElement("button");
     editBtn.setAttribute("id", "e_" + posting.id);
-    editBtn.classList.add(
-      "px-2",
-      "py-1",
-      "bg-blue-500",
-      "text-white",
-      "rounded-lg",
-      "mb-2",
-      "hover:bg-blue-600",
-      "transition",
-      "duration-300",
-      "ease-in-out"
-    );
+    editBtn.classList.add("px-2","py-1","bg-blue-500","text-white","rounded-lg","mb-2","hover:bg-blue-600","transition","duration-300","ease-in-out");
     editBtn.innerHTML = "Edit";
-    editBtn.addEventListener("click", (e) => {
-      openingModal(e, posting);
-    });
 
     header.appendChild(editBtn);
     header.appendChild(closeBtn);
@@ -286,8 +150,6 @@ function renderPostings(postings) {
   });
 }
 
-
-
 function deletePosting(e) {
   const id = e.target.id.substr(2);
   axios
@@ -303,9 +165,6 @@ function deletePosting(e) {
       console.error(error);
     });
 }
-
-
-
 
 function addMembers(e) {
   const membersUl = document.querySelector("#membersUl");
@@ -341,9 +200,7 @@ function addMembers(e) {
 
 membersInput.addEventListener("keydown", (e) => {
   addMembers(e);
-});
-
-
+})
 
 function addResources(sentData) {
   if(resourcesArr.some(resource => resource.name === sentData.name)) {
@@ -419,8 +276,6 @@ imageInput.addEventListener("change", async (e) => {
   uploadImage(e);
   e.target.value = "";
 });
-
-
 
 function addPosting() {
   //validate -> groupName, location, date, startTime, endTime, topic are required
