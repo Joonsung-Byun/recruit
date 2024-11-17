@@ -90,10 +90,17 @@ app.delete("/postings/:id", async (req, res) => {
 });
 
 app.put("/postings/:id", async (req, res) => {
-
   const id = req.params.id;
-  console.log(req.body.startTime)
-  const { data, error } = await supabaseDB.from("postings").update(req.body).eq('id', id);
+  console.log(req.body[2])
+  const { data, error } = await supabaseDB.from("postings")
+  .update
+  ({ 
+      groupName: req.body[0],
+      members: req.body[1],
+      resources: req.body[2],
+    })
+  .eq('id', id);
+
   if (error) {
     console.log(error)
     return res.status(500).json({ error: error.message });

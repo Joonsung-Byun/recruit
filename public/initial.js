@@ -4,6 +4,363 @@ let resourcesArr = [];
 const membersInput = document.querySelector("#members");
 const membersArr = [];
 
+function editModal(e, posting){
+
+  const modal = document.createElement("div");
+  modal.classList.add("fixed","top-0","left-0","w-full","h-full","bg-black","bg-opacity-50","flex","justify-center","items-center");
+  modal.setAttribute("id","modal");
+  
+
+  const modalContent = document.createElement("div");
+  modalContent.classList.add("bg-white","p-4","rounded-lg","dark:bg-gray-800");
+
+  //Group Name
+  let editGroupName = document.createElement('div')
+  editGroupName.classList.add("mb-3")
+
+  let editNameGuide = document.createElement('h2')
+  editNameGuide.textContent = "Group Name"
+
+  let editGroupNameEdit = document.createElement('input')
+  editGroupNameEdit.setAttribute("id", "nameEditInput")
+  editGroupNameEdit.classList.add("border")
+  editGroupNameEdit.value = posting.groupName
+
+  editGroupName.appendChild(editNameGuide)
+  editGroupName.appendChild(editGroupNameEdit)
+
+  //Location
+  let editGroupLocation = document.createElement('div')
+  editGroupLocation.classList.add("mb-3")
+
+  let editLocationGuide = document.createElement('h2')
+  editLocationGuide.textContent = "Location"
+
+  let editLocationEdit = document.createElement('input')
+  editLocationEdit.classList.add("border")
+  editLocationEdit.value = posting.location
+
+  editGroupLocation.appendChild(editLocationGuide)
+  editGroupLocation.appendChild(editLocationEdit)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //Members
+  let editMemberDiv = document.createElement('div')
+  editMemberDiv.classList.add("mb-3")
+
+  let editMemberDivGuide = document.createElement('h2')
+  editMemberDivGuide.textContent = "Members"
+
+  let editMemberInput = document.createElement("input");
+  editMemberInput.setAttribute("type","text");
+  editMemberInput.classList.add("border","border-gray-300","rounded-lg","p-2","mb-2");
+  
+  let editMembersArr = [...posting.members]
+  let editMembers = document.createElement("ul")
+  editMembers.classList.add(`editMembersUl_${posting.id}`);
+
+  editMemberInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      posting.members.push(editMemberInput.value);
+      editMembers.innerHTML = "";
+      posting.members.forEach((member) => {
+        let eachmember = document.createElement("li");
+        eachmember.innerHTML = member;
+        
+        let eachmemberDeleteBtn = document.createElement("a");
+        eachmemberDeleteBtn.textContent = "X";
+        eachmemberDeleteBtn.classList.add("px-2","py-1","bg-red-500","text-white","rounded-lg","mb-2","hover:bg-red-600","transition","duration-300","ease-in-out");
+
+        eachmember.appendChild(eachmemberDeleteBtn);
+        editMembers.appendChild(eachmember);
+
+
+      })
+      editMembersArr = [...posting.members]
+      }
+    })
+  
+  posting.members.forEach((member) => {
+    let eachmember = document.createElement("li");
+    eachmember.innerHTML = member;
+    editMembers.appendChild(eachmember);
+  })
+
+  editMemberDiv.appendChild(editMemberDivGuide)
+  editMemberDiv.appendChild(editMemberInput)
+  editMemberDiv.appendChild(editMembers)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //Resources
+  let editResourcesArr = [...posting.resources]
+  let editResources = document.createElement('div')
+  editResources.classList.add("mb-3")
+
+  let editResourcesGuide = document.createElement('h2')
+  editResourcesGuide.textContent = "Resources"
+
+
+
+  let editResourcesLoading = document.createElement("span");
+  editResourcesLoading.setAttribute('role', 'status');
+  editResourcesLoading.classList.add("hidden");
+  editResourcesLoading.innerHTML = `
+    <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+    </svg>
+    <span class="sr-only">Loading...</span>
+  `;
+
+  let editResourcesUl = document.createElement("ul")
+  editResourcesUl.classList.add("flex","gap-2","flex-wrap")
+
+  posting.resources.forEach((resource) => {
+    let eachResource = document.createElement("li");
+    let resourceLink = document.createElement("a");
+    resourceLink.href = resource.url;
+    resourceLink.target = "_blank";
+    resourceLink.textContent = resource.name;
+    resourceLink.classList.add("border","border-gray-300","rounded-lg","p-2");
+    eachResource.appendChild(resourceLink);
+    editResourcesUl.appendChild(eachResource);
+  })
+
+  let editResourcesInput = document.createElement("input");
+  editResourcesInput.setAttribute("type","file");
+  
+  editResourcesInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      console.error("No file selected");
+      return;
+    }
+  
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      editResourcesLoading.classList.remove("hidden");
+      fetch("/imgUpload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => {
+          editResourcesLoading.classList.add("hidden");
+          return res.json();
+        })
+        .then((data) => {
+          if (data.url.indexOf(" ")) {
+            let goodUrl = data.url.replace(/\s/g, "%20");
+            const sendingData = {
+              url: goodUrl,
+              name: data.name,
+            };
+            editResourcesArr.push(sendingData);
+            editResourcesUl.innerHTML = "";
+            editResourcesArr.forEach((resource) => {
+              let eachResource = document.createElement("li");
+              let resourceLink = document.createElement("a");
+              resourceLink.href = resource.url;
+              resourceLink.target = "_blank";
+              resourceLink.textContent = resource.name;
+              resourceLink.classList.add("border","border-gray-300","rounded-lg","p-2");
+              eachResource.appendChild(resourceLink);
+              editResourcesUl.appendChild(eachResource);
+            })
+          } else {
+            const sendingData = {
+              url: data.url,
+              name: data.name,
+            };
+            editResourcesArr.push(sendingData);
+            editResourcesUl.innerHTML = "";
+            editResourcesArr.forEach((resource) => {
+              let eachResource = document.createElement("li");
+              let resourceLink = document.createElement("a");
+              resourceLink.href = resource.url;
+              resourceLink.target = "_blank";
+              resourceLink.textContent = resource.name;
+              resourceLink.classList.add("border","border-gray-300","rounded-lg","p-2");
+              eachResource.appendChild(resourceLink);
+              editResourcesUl.appendChild(eachResource);
+
+            })
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+        .finally(() => {
+          // 
+        });
+    }
+  });
+
+
+  editResources.appendChild(editResourcesGuide)
+  editResources.appendChild(editResourcesLoading)
+
+  editResources.appendChild(editResourcesUl)
+
+  editResources.appendChild(editResourcesInput)
+
+
+
+
+
+
+
+
+
+
+
+  //Date time
+  let editDateTime = document.createElement('div')
+  editDateTime.classList.add("mb-3")
+
+  let editDateTimeGuide = document.createElement('h2')
+  editDateTimeGuide.textContent = "Date"
+
+  let editDateTimeEdit = document.createElement('input')
+  editDateTimeEdit.type = "date"
+  editDateTimeEdit.classList.add("border")
+  editDateTimeEdit.value = posting.date
+
+  editDateTime.appendChild(editDateTimeGuide)
+  editDateTime.appendChild(editDateTimeEdit)
+
+  //Start time
+  let editStartTime = document.createElement('div')
+  editStartTime.classList.add("mb-3")
+
+  let editStartTimeGuide = document.createElement('h2')
+  editStartTimeGuide.textContent = "Start Time"
+
+  let editStartTimeEdit = document.createElement('input')
+  editStartTimeEdit.type = "time"
+  editStartTimeEdit.classList.add("border")
+  editStartTimeEdit.value = posting.startTime
+
+  editStartTime.appendChild(editStartTimeGuide)
+  editStartTime.appendChild(editStartTimeEdit)
+
+  //End Time
+  let editEndTime = document.createElement('div')
+  editEndTime.classList.add("mb-3")
+
+  let editEndTimeGuide = document.createElement('h2')
+  editEndTimeGuide.textContent = "End Time"
+
+  let editEndTimeEdit = document.createElement('input')
+  editEndTimeEdit.type = "time"
+  editEndTimeEdit.classList.add("border")
+  editEndTimeEdit.value = posting.endTime
+
+  editEndTime.appendChild(editEndTimeGuide)
+  editEndTime.appendChild(editEndTimeEdit)
+
+
+  //Topic
+  let editTopic = document.createElement('div')
+  editEndTime.classList.add("mb-3")
+
+  let editTopicGuide = document.createElement('h2')
+  editEndTimeGuide.textContent = "Topic"
+
+  let editTopicEdit = document.createElement('input')
+  editEndTimeEdit.type = "text"
+  editEndTimeEdit.classList.add("border")
+  editEndTimeEdit.value = posting.topic
+
+  editTopic.appendChild(editTopicGuide)
+  editTopic.appendChild(editTopicEdit)
+
+
+
+
+
+
+
+
+
+
+  let saveChangeBtn = document.createElement('span')
+  saveChangeBtn.textContent = "Save"
+
+
+  saveChangeBtn.addEventListener('click', function(){
+    editPosting(posting, editGroupNameEdit.value, editMembersArr, editResourcesArr )
+  })
+
+  modalContent.appendChild(editGroupName)
+  modalContent.appendChild(editGroupLocation)
+  modalContent.appendChild(editMemberDiv);
+  modalContent.appendChild(editDateTime)
+  modalContent.appendChild(editStartTime)
+
+  modalContent.appendChild(editEndTime)
+  modalContent.appendChild(editTopic)
+  modalContent.appendChild(editResources)
+
+  modalContent.appendChild(saveChangeBtn)
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+}
+
+function editPosting(posting, name, membersarr, editResourcesArr){
+  const sendingData = [name, membersarr, editResourcesArr]
+  console.log(sendingData[2])
+    axios({
+      method: 'put',
+      url: `/postings/${posting.id}`,
+      data: sendingData
+    }).then((res)=>{
+      document.querySelector('#modal').remove()
+      res.data.forEach((posting) => {
+        posting.members = JSON.parse(posting.members);
+        posting.resources = JSON.parse(posting.resources);
+      });
+      renderPostings(res.data)
+    })
+
+}
 
 function renderPostings(postings) {
   let postingsContainer = document.querySelector("#postings");
@@ -27,6 +384,9 @@ function renderPostings(postings) {
     editBtn.setAttribute("id", "e_" + posting.id);
     editBtn.classList.add("px-2","py-1","bg-blue-500","text-white","rounded-lg","mb-2","hover:bg-blue-600","transition","duration-300","ease-in-out");
     editBtn.innerHTML = "Edit";
+    editBtn.addEventListener("click", (e) => {
+      editModal(e, posting);
+    });
 
     header.appendChild(editBtn);
     header.appendChild(closeBtn);
