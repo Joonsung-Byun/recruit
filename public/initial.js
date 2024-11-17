@@ -46,22 +46,6 @@ function editModal(e, posting){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   //Members
   let editMemberDiv = document.createElement('div')
   editMemberDiv.classList.add("mb-3")
@@ -84,47 +68,43 @@ function editModal(e, posting){
       posting.members.forEach((member) => {
         let eachmember = document.createElement("li");
         eachmember.innerHTML = member;
-        
-        let eachmemberDeleteBtn = document.createElement("a");
-        eachmemberDeleteBtn.textContent = "X";
-        eachmemberDeleteBtn.classList.add("px-2","py-1","bg-red-500","text-white","rounded-lg","mb-2","hover:bg-red-600","transition","duration-300","ease-in-out");
-
-        eachmember.appendChild(eachmemberDeleteBtn);
         editMembers.appendChild(eachmember);
-
-
       })
       editMembersArr = [...posting.members]
       }
     })
+    function renderMembers(ul, array) {
+      ul.innerHTML = "";
+      array.forEach((member) => {
+        let eachmember = document.createElement("li");
+        eachmember.innerHTML = member;
   
-  posting.members.forEach((member) => {
-    let eachmember = document.createElement("li");
-    eachmember.innerHTML = member;
-    editMembers.appendChild(eachmember);
-  })
+        let eachmemberDeleteBtn = document.createElement("span");
+        eachmemberDeleteBtn.textContent = "X";
+        eachmemberDeleteBtn.addEventListener("click", (e) => {
+          deleteEditMember(e, array, ul);
+        })
+  
+        eachmember.appendChild(eachmemberDeleteBtn);
+        ul.appendChild(eachmember);
+  
+      });
+    }
+
+    function deleteEditMember(e, array, ul) {
+      e.target.parentElement.remove();
+      array.splice(array.indexOf(e.target.parentElement.textContent.slice(0, -1)), 1);
+      console.log("deleteEditMember",array);
+      editMembersArr = [...array]
+      renderMembers(ul, array);
+    }
+    renderMembers(editMembers, posting.members,  editMembersArr)
+    
+
 
   editMemberDiv.appendChild(editMemberDivGuide)
   editMemberDiv.appendChild(editMemberInput)
   editMemberDiv.appendChild(editMembers)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -226,9 +206,6 @@ function editModal(e, posting){
         })
         .catch((err) => {
           console.error(err);
-        })
-        .finally(() => {
-          // 
         });
     }
   });
@@ -312,15 +289,6 @@ function editModal(e, posting){
   editTopic.appendChild(editTopicGuide)
   editTopic.appendChild(editTopicEdit)
 
-
-
-
-
-
-
-
-
-
   let saveChangeBtn = document.createElement('span')
   saveChangeBtn.textContent = "Save"
 
@@ -346,7 +314,7 @@ function editModal(e, posting){
 
 function editPosting(posting, name, membersarr, editResourcesArr){
   const sendingData = [name, membersarr, editResourcesArr]
-  console.log(sendingData[2])
+  console.log(sendingData[1])
     axios({
       method: 'put',
       url: `/postings/${posting.id}`,
@@ -684,7 +652,6 @@ function addPosting() {
       console.error(error);
     });
 }
-
 
 function getPostings() {
   axios
