@@ -1,14 +1,16 @@
 const imageInput = document.querySelector("#resources");
 let resourcesArr = [];
-
 const membersInput = document.querySelector("#members");
 const membersArr = [];
 
+
 function editModal(e, posting) {
+  // overall modal
   const modal = document.createElement("div");
   modal.classList.add("fixed","top-0","left-0","w-full","h-full","bg-black","bg-opacity-50","flex","justify-center","items-center");
   modal.setAttribute("id", "modal");
-
+  
+  // modal content
   const modalContent = document.createElement("div");
   modalContent.classList.add("bg-white","p-4","rounded-lg","dark:bg-gray-800", "max-w-xs", "md:max-w-xl", "lg:max-w-2xl", "w-full");
 
@@ -53,55 +55,12 @@ function editModal(e, posting) {
   editMemberInput.setAttribute("type", "text");
   editMemberInput.classList.add("border","px-2","py-1", "rounded", "bg-gray-100", "border", "mb-2" , "block", "w-full" );
 
-  let editMembersArr = [...posting.members];
   let editMembers = document.createElement("ul");
   editMembers.classList.add(`editMembersUl_${posting.id}`, "flex", "gap-4", "flex-wrap");
 
-  editMemberInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      posting.members.push(editMemberInput.value);
-      editMembers.innerHTML = "";
-      posting.members.forEach((member) => {
-        let eachmember = document.createElement("li");
-        eachmember.innerHTML = member;
-        editMembers.appendChild(eachmember);
-      });
-      editMembersArr = [...posting.members];
-      editMemberInput.value = "";
-      renderMembers(editMembers, posting.members, editMembersArr);
-    }
-  });
+  editMemberInput.addEventListener("keydown", (e) => { editMembersAdding(e, posting.members, editMembers, editMemberInput) });
 
-  function renderMembers(ul, array) {
-    ul.innerHTML = "";
-    array.forEach((member) => {
-      let eachmember = document.createElement("li");
-      eachmember.innerHTML = member;
-      eachmember.classList.add("border","border-gray-300","rounded-lg","px-2", "relative", "py-1");
-
-      let eachmemberDeleteBtn = document.createElement("img");
-      eachmemberDeleteBtn.src = "/images/x.jpg";
-      eachmemberDeleteBtn.classList.add("cursor-pointer", "absolute", "-right-3", "-top-3", "w-6", "h-6", "rounded-full", "z-50");
-      eachmemberDeleteBtn.addEventListener("click", (e) => {
-        deleteEditMember(e, array, ul);
-      });
-
-      eachmember.appendChild(eachmemberDeleteBtn);
-      ul.appendChild(eachmember);
-    });
-  }
-
-  function deleteEditMember(e, array, ul) {
-    e.stopPropagation();
-    console.log(e.target.parentElement.textContent );
-    e.target.parentElement.remove();
-    array.splice(
-      array.indexOf(e.target.parentElement.textContent),1);
-    editMembersArr = [...array];
-    renderMembers(ul, array);
-  }
-
-  renderMembers(editMembers, posting.members, editMembersArr);
+  renderEditMembers(editMembers, posting.members);
 
   editMemberDiv.appendChild(editMemberDivGuide);
   editMemberDiv.appendChild(editMemberInput);
@@ -294,7 +253,7 @@ function editModal(e, posting) {
     editPosting(
       posting,
       editGroupNameEdit.value,
-      editMembersArr,
+      posting.members,
       editResourcesArr
     );
   });
@@ -304,11 +263,9 @@ function editModal(e, posting) {
   modalContent.appendChild(editMemberDiv);
   modalContent.appendChild(editDateTime);
   modalContent.appendChild(editStartTime);
-
+  modalContent.appendChild(editResources);
   modalContent.appendChild(editEndTime);
   modalContent.appendChild(editTopic);
-  modalContent.appendChild(editResources);
-
   modalContent.appendChild(saveChangeBtn);
   modal.appendChild(modalContent);
   document.body.appendChild(modal);
@@ -329,6 +286,41 @@ function editPosting(posting, name, membersarr, editResourcesArr) {
     });
     renderPostings(res.data);
   });
+}
+
+function deleteEditMember(e, array, ul) {
+  e.stopPropagation();
+  console.log(e.target.parentElement.textContent );
+  e.target.parentElement.remove();
+  array.splice(array.indexOf(e.target.parentElement.textContent),1);
+  renderEditMembers(ul, array);
+}
+
+function renderEditMembers(ul, array) {
+  ul.innerHTML = "";
+  array.forEach((member) => {
+    let eachmember = document.createElement("li");
+    eachmember.innerHTML = member;
+    eachmember.classList.add("border","border-gray-300","rounded-lg","px-2", "relative", "py-1");
+
+    let eachmemberDeleteBtn = document.createElement("img");
+    eachmemberDeleteBtn.src = "/images/x.jpg";
+    eachmemberDeleteBtn.classList.add("cursor-pointer", "absolute", "-right-3", "-top-3", "w-6", "h-6", "rounded-full", "z-50");
+    eachmemberDeleteBtn.addEventListener("click", (e) => {
+      deleteEditMember(e, array, ul);
+    });
+
+    eachmember.appendChild(eachmemberDeleteBtn);
+    ul.appendChild(eachmember);
+  });
+}
+
+function editMembersAdding(e, array, ul, input){
+  if (e.key === "Enter") {
+    array.push(input.value);
+    input.value = "";
+    renderEditMembers(ul, array);
+  }
 }
 
 function renderPostings(postings) {
@@ -506,12 +498,6 @@ function renderPostings(postings) {
 
     // Append the posting element to the container
     postingsContainer.appendChild(postingElement);
-    // document.querySelectorAll(".resourceList").forEach((resource) => {
-    //   resource.addEventListener("click", (e) => {
-    //     e.preventDefault();
-    //     downloadFile(resource);
-    //   });
-    // })
   });
 }
 
@@ -534,25 +520,15 @@ function deletePosting(e) {
 function addMembers(e) {
   const membersUl = document.querySelector("#membersUl");
   if (e.key === "Enter") {
-    console.log("enter");
     if (membersArr.includes(membersInput.value)) {
       alert("You already added this member");
       membersInput.value = "";
       return;
     } else {
+      membersArr.push(membersInput.value);
       const tag = document.createElement("span");
       tag.textContent = membersInput.value;
-      membersArr.push(membersInput.value);
-      tag.classList.add(
-        "border",
-        "border-gray-300",
-        "rounded-lg",
-        "px-4",
-        "py-2",
-        "m-2",
-        "relative"
-      );
-
+      tag.classList.add("border","border-gray-300","rounded-lg","px-4","py-2","m-2","relative");
       // remove btn -> <svg class="h-8 w-8 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
       const removeBtn = createXbutton("members", membersArr);
       tag.appendChild(removeBtn);
