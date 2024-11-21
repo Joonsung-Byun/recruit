@@ -203,3 +203,5 @@ function createXbutton(role, array) {
   //   console.log('여기주목', output)
   //   renderMembers(ul, array);
   // }
+
+  

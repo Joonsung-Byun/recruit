@@ -30,7 +30,8 @@
                         <div class="w-full">
                             <label for="members">Members</label>
                             <input type="text" name="members" id="members"
-                                placeholder="hit enter after type one member">
+                                placeholder="Hit enter after typing a name"
+                                >
                             <div id="membersUl" class="mt-4 flex flex-wrap gap-3">
 
                             </div>
@@ -50,9 +51,9 @@
                             <input type="time" name="endTime" id="endTime">
                         </div>
                         <div class="sm:col-span-2">
-                            <label for="resources">Resources Upload</label>
-                            <input type="file" name="resources" id="resources">
-                            <div id="resourcesUl" class="mt-4 flex flex-wrap gap-4">
+                            <label for="resources" >Resources Upload</label>
+                            <input type="file" name="resources" id="resources" class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 file:bg-black file:border-0 file:me-4 file:py-3 file:px-4 file:text-white">
+                            <div id="resourcesUl" class="mt-4 flex flex-wrap gap-4 ">
 
                             </div>
                         </div>
@@ -81,9 +82,10 @@
     </main>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/downloadjs/1.4.8/download.min.js"></script>
-    <script src="/utils.js"></script>
+
     <script src="/modal.js"></script>
     <script type="module" src="/initial.js"></script>
+    <script src="/utils.js"></script>
 </body>
 
 </html>

@@ -10,7 +10,7 @@ function editModal(e, posting) {
   modal.setAttribute("id", "modal");
 
   const modalContent = document.createElement("div");
-  modalContent.classList.add("bg-white","p-4","rounded-lg","dark:bg-gray-800");
+  modalContent.classList.add("bg-white","p-4","rounded-lg","dark:bg-gray-800", "max-w-xs", "md:max-w-xl", "lg:max-w-2xl", "w-full");
 
   //Group Name
   let editGroupName = document.createElement("div");
@@ -21,7 +21,7 @@ function editModal(e, posting) {
 
   let editGroupNameEdit = document.createElement("input");
   editGroupNameEdit.setAttribute("id", "nameEditInput");
-  editGroupNameEdit.classList.add("border");
+  editGroupNameEdit.classList.add("border","px-2","py-1", "rounded", "bg-gray-100", "border", "block", "w-full" );
   editGroupNameEdit.value = posting.groupName;
 
   editGroupName.appendChild(editNameGuide);
@@ -35,7 +35,7 @@ function editModal(e, posting) {
   editLocationGuide.textContent = "Location";
 
   let editLocationEdit = document.createElement("input");
-  editLocationEdit.classList.add("border");
+  editLocationEdit.classList.add("border","px-2","py-1", "rounded", "bg-gray-100", "border" , "block", "w-full" );
   editLocationEdit.value = posting.location;
 
   editGroupLocation.appendChild(editLocationGuide);
@@ -49,12 +49,13 @@ function editModal(e, posting) {
   editMemberDivGuide.textContent = "Members";
 
   let editMemberInput = document.createElement("input");
+  editMemberInput.placeholder = "Hit enter after typing a name"
   editMemberInput.setAttribute("type", "text");
-  editMemberInput.classList.add("border","border-gray-300","rounded-lg","p-2","mb-2");
+  editMemberInput.classList.add("border","px-2","py-1", "rounded", "bg-gray-100", "border", "mb-2" , "block", "w-full" );
 
   let editMembersArr = [...posting.members];
   let editMembers = document.createElement("ul");
-  editMembers.classList.add(`editMembersUl_${posting.id}`);
+  editMembers.classList.add(`editMembersUl_${posting.id}`, "flex", "gap-4", "flex-wrap");
 
   editMemberInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
@@ -66,6 +67,8 @@ function editModal(e, posting) {
         editMembers.appendChild(eachmember);
       });
       editMembersArr = [...posting.members];
+      editMemberInput.value = "";
+      renderMembers(editMembers, posting.members, editMembersArr);
     }
   });
 
@@ -74,9 +77,11 @@ function editModal(e, posting) {
     array.forEach((member) => {
       let eachmember = document.createElement("li");
       eachmember.innerHTML = member;
+      eachmember.classList.add("border","border-gray-300","rounded-lg","px-2", "relative", "py-1");
 
-      let eachmemberDeleteBtn = document.createElement("span");
-      eachmemberDeleteBtn.textContent = "X";
+      let eachmemberDeleteBtn = document.createElement("img");
+      eachmemberDeleteBtn.src = "/images/x.jpg";
+      eachmemberDeleteBtn.classList.add("cursor-pointer", "absolute", "-right-3", "-top-3", "w-6", "h-6", "rounded-full", "z-50");
       eachmemberDeleteBtn.addEventListener("click", (e) => {
         deleteEditMember(e, array, ul);
       });
@@ -87,11 +92,11 @@ function editModal(e, posting) {
   }
 
   function deleteEditMember(e, array, ul) {
+    e.stopPropagation();
+    console.log(e.target.parentElement.textContent );
     e.target.parentElement.remove();
     array.splice(
-      array.indexOf(e.target.parentElement.textContent.slice(0, -1)),
-      1
-    );
+      array.indexOf(e.target.parentElement.textContent),1);
     editMembersArr = [...array];
     renderMembers(ul, array);
   }
@@ -105,7 +110,7 @@ function editModal(e, posting) {
   //Resources
   let editResourcesArr = [...posting.resources];
   let editResources = document.createElement("div");
-  editResources.classList.add("mb-3");
+  editResources.classList.add("mb-5");
 
   let editResourcesGuide = document.createElement("h2");
   editResourcesGuide.textContent = "Resources";
@@ -122,20 +127,22 @@ function editModal(e, posting) {
   `;
 
   let editResourcesUl = document.createElement("ul");
-  editResourcesUl.classList.add("flex", "gap-2", "flex-wrap");
+  editResourcesUl.classList.add("flex", "gap-4", "flex-wrap", "mb-8" , "w-full" );
 
   function renderResources(ul, array) {
     ul.innerHTML = "";
     array.forEach((resource) => {
     let eachResource = document.createElement("li");
+    eachResource.classList.add("relative");
     let resourceLink = document.createElement("a");
     resourceLink.href = resource.url;
     resourceLink.target = "_blank";
     resourceLink.textContent = resource.name;
-    resourceLink.classList.add("border","border-gray-300","rounded-lg","p-2");
+    resourceLink.classList.add("border","border-gray-300","rounded-lg","p-2",);
 
-    let eachResourceDeleteBtn = document.createElement("span");
-    eachResourceDeleteBtn.textContent = "X";
+    let eachResourceDeleteBtn = document.createElement("img");
+    eachResourceDeleteBtn.src = "/images/x.jpg";
+    eachResourceDeleteBtn.classList.add("cursor-pointer", "absolute", "-right-3", "-top-3", "w-6", "h-6", "rounded-full", "z-50");
     eachResourceDeleteBtn.addEventListener("click", (e) => {
       deleteEditResource(e, array, ul);
     });
@@ -163,6 +170,9 @@ function editModal(e, posting) {
 
   let editResourcesInput = document.createElement("input");
   editResourcesInput.setAttribute("type", "file");
+  //block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 file:bg-black file:border-0 file:me-4 file:py-3 file:px-4 file:text-white
+  //위 주석에 있는 클래스들을 추가해야함
+  editResourcesInput.classList.add("block","w-full","border", "border-gray-200", "shadow-sm", "rounded-lg", "text-sm", "focus:z-10", "focus:border-blue-500", "focus:ring-blue-500", "disabled:opacity-50", "disabled:pointer-events-none", "dark:bg-neutral-900", "dark:border-neutral-700", "dark:text-neutral-400", "file:bg-black", "file:border-0", "file:me-4", "file:py-3", "file:px-4", "file:text-white", "mb-4");
 
   editResourcesInput.addEventListener("change", async (e) => {
     const file = e.target.files[0];
@@ -191,44 +201,15 @@ function editModal(e, posting) {
               name: data.name,
             };
             editResourcesArr.push(sendingData);
-            editResourcesUl.innerHTML = "";
-            editResourcesArr.forEach((resource) => {
-              let eachResource = document.createElement("li");
-              let resourceLink = document.createElement("a");
-              resourceLink.href = resource.url;
-              resourceLink.target = "_blank";
-              resourceLink.textContent = resource.name;
-              resourceLink.classList.add(
-                "border",
-                "border-gray-300",
-                "rounded-lg",
-                "p-2"
-              );
-              eachResource.appendChild(resourceLink);
-              editResourcesUl.appendChild(eachResource);
-            });
+
+            renderResources(editResourcesUl, editResourcesArr);
           } else {
             const sendingData = {
               url: data.url,
               name: data.name,
             };
             editResourcesArr.push(sendingData);
-            editResourcesUl.innerHTML = "";
-            editResourcesArr.forEach((resource) => {
-              let eachResource = document.createElement("li");
-              let resourceLink = document.createElement("a");
-              resourceLink.href = resource.url;
-              resourceLink.target = "_blank";
-              resourceLink.textContent = resource.name;
-              resourceLink.classList.add(
-                "border",
-                "border-gray-300",
-                "rounded-lg",
-                "p-2"
-              );
-              eachResource.appendChild(resourceLink);
-              editResourcesUl.appendChild(eachResource);
-            });
+            renderResources(editResourcesUl, editResourcesArr);
           }
         })
         .catch((err) => {
@@ -239,10 +220,10 @@ function editModal(e, posting) {
 
   editResources.appendChild(editResourcesGuide);
   editResources.appendChild(editResourcesLoading);
-
+  editResources.appendChild(editResourcesInput);
   editResources.appendChild(editResourcesUl);
 
-  editResources.appendChild(editResourcesInput);
+  
 
   //Date time
   let editDateTime = document.createElement("div");
@@ -252,6 +233,7 @@ function editModal(e, posting) {
   editDateTimeGuide.textContent = "Date";
 
   let editDateTimeEdit = document.createElement("input");
+  editDateTimeEdit.classList.add("border", "px-2", "py-1", "rounded", "bg-gray-100", "border" , "block", "w-full" );
   editDateTimeEdit.type = "date";
   editDateTimeEdit.classList.add("border");
   editDateTimeEdit.value = posting.date;
@@ -268,7 +250,7 @@ function editModal(e, posting) {
 
   let editStartTimeEdit = document.createElement("input");
   editStartTimeEdit.type = "time";
-  editStartTimeEdit.classList.add("border");
+  editStartTimeEdit.classList.add("border", "px-2", "py-1", "rounded", "bg-gray-100", "border" , "block", "w-full" );
   editStartTimeEdit.value = posting.startTime;
 
   editStartTime.appendChild(editStartTimeGuide);
@@ -298,13 +280,14 @@ function editModal(e, posting) {
 
   let editTopicEdit = document.createElement("input");
   editEndTimeEdit.type = "text";
-  editEndTimeEdit.classList.add("border");
+  editEndTimeEdit.classList.add("border", "px-2", "py-1", "rounded", "bg-gray-100", "border" , "block", "w-full" );
   editEndTimeEdit.value = posting.topic;
 
   editTopic.appendChild(editTopicGuide);
   editTopic.appendChild(editTopicEdit);
 
   let saveChangeBtn = document.createElement("span");
+  saveChangeBtn.classList.add("cursor-pointer", "bg-blue-500", "text-white", "rounded-lg", "px-4", "py-2", "hover:bg-blue-600", "transition", "duration-300", "ease-in-out", "w-full", "text-center", "block");
   saveChangeBtn.textContent = "Save";
 
   saveChangeBtn.addEventListener("click", function () {
@@ -689,6 +672,8 @@ function addPosting() {
     resources: resourcesArr,
     topic: topic,
   };
+
+  
   axios({
     method: "post",
     url: "/postings",
