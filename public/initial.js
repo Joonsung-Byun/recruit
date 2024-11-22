@@ -49,7 +49,7 @@ function editModal(e, posting) {
 
   let editMemberDivGuide = document.createElement("h2");
   editMemberDivGuide.textContent = "Members";
-
+ 
   let editMemberInput = document.createElement("input");
   editMemberInput.placeholder = "Hit enter after typing a name"
   editMemberInput.setAttribute("type", "text");
@@ -66,123 +66,33 @@ function editModal(e, posting) {
   editMemberDiv.appendChild(editMemberInput);
   editMemberDiv.appendChild(editMembers);
 
-  //Resources
-  let editResourcesArr = [...posting.resources];
+  //Resource
   let editResources = document.createElement("div");
   editResources.classList.add("mb-5");
 
   let editResourcesGuide = document.createElement("h2");
   editResourcesGuide.textContent = "Resources";
 
-  let editResourcesLoading = document.createElement("span");
-  editResourcesLoading.setAttribute("role", "status");
-  editResourcesLoading.classList.add("hidden");
-  editResourcesLoading.innerHTML = `
-    <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-    </svg>
-    <span class="sr-only">Loading...</span>
-  `;
+  let editResourcesLoading = loadingSpinner();
 
   let editResourcesUl = document.createElement("ul");
   editResourcesUl.classList.add("flex", "gap-4", "flex-wrap", "mb-8" , "w-full" );
 
-  function renderResources(ul, array) {
-    ul.innerHTML = "";
-    array.forEach((resource) => {
-    let eachResource = document.createElement("li");
-    eachResource.classList.add("relative");
-    let resourceLink = document.createElement("a");
-    resourceLink.href = resource.url;
-    resourceLink.target = "_blank";
-    resourceLink.textContent = resource.name;
-    resourceLink.classList.add("border","border-gray-300","rounded-lg","p-2",);
-
-    let eachResourceDeleteBtn = document.createElement("img");
-    eachResourceDeleteBtn.src = "/images/x.jpg";
-    eachResourceDeleteBtn.classList.add("cursor-pointer", "absolute", "-right-3", "-top-3", "w-6", "h-6", "rounded-full", "z-50");
-    eachResourceDeleteBtn.addEventListener("click", (e) => {
-      deleteEditResource(e, array, ul);
-    });
-    eachResource.appendChild(resourceLink);
-    eachResource.appendChild(eachResourceDeleteBtn);
-    editResourcesUl.appendChild(eachResource);
-    })
-  }
-
-  function deleteEditResource(e, array, ul) {
-    let index = ''
-    for (let i = 0; i < array.length; i++) {
-      if (array[i].name === e.target.parentElement.textContent.slice(0, -1)) {
-        index = i;
-      }
-    }
-    e.target.parentElement.remove();
-    array.splice(index, 1);
-
-    editResourcesArr = [...array];
-    renderResources(ul, array);
-  }
-
-  renderResources(editResourcesUl, posting.resources);
+  renderEditResources(editResourcesUl, posting.resources);
 
   let editResourcesInput = document.createElement("input");
   editResourcesInput.setAttribute("type", "file");
-  //block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 file:bg-black file:border-0 file:me-4 file:py-3 file:px-4 file:text-white
-  //위 주석에 있는 클래스들을 추가해야함
   editResourcesInput.classList.add("block","w-full","border", "border-gray-200", "shadow-sm", "rounded-lg", "text-sm", "focus:z-10", "focus:border-blue-500", "focus:ring-blue-500", "disabled:opacity-50", "disabled:pointer-events-none", "dark:bg-neutral-900", "dark:border-neutral-700", "dark:text-neutral-400", "file:bg-black", "file:border-0", "file:me-4", "file:py-3", "file:px-4", "file:text-white", "mb-4");
 
   editResourcesInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file) {
-      console.error("No file selected");
-      return;
-    }
-
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      editResourcesLoading.classList.remove("hidden");
-      fetch("/imgUpload", {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => {
-          editResourcesLoading.classList.add("hidden");
-          return res.json();
-        })
-        .then((data) => {
-          if (data.url.indexOf(" ")) {
-            let goodUrl = data.url.replace(/\s/g, "%20");
-            const sendingData = {
-              url: goodUrl,
-              name: data.name,
-            };
-            editResourcesArr.push(sendingData);
-
-            renderResources(editResourcesUl, editResourcesArr);
-          } else {
-            const sendingData = {
-              url: data.url,
-              name: data.name,
-            };
-            editResourcesArr.push(sendingData);
-            renderResources(editResourcesUl, editResourcesArr);
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
+    uploadImage(e, "edit", editResourcesLoading, posting.resources, editResourcesUl);
+    e.target.value = "";
   });
 
   editResources.appendChild(editResourcesGuide);
   editResources.appendChild(editResourcesLoading);
   editResources.appendChild(editResourcesInput);
   editResources.appendChild(editResourcesUl);
-
-  
 
   //Date time
   let editDateTime = document.createElement("div");
@@ -249,14 +159,7 @@ function editModal(e, posting) {
   saveChangeBtn.classList.add("cursor-pointer", "bg-blue-500", "text-white", "rounded-lg", "px-4", "py-2", "hover:bg-blue-600", "transition", "duration-300", "ease-in-out", "w-full", "text-center", "block");
   saveChangeBtn.textContent = "Save";
 
-  saveChangeBtn.addEventListener("click", function () {
-    editPosting(
-      posting,
-      editGroupNameEdit.value,
-      posting.members,
-      editResourcesArr
-    );
-  });
+  saveChangeBtn.addEventListener("click", () => { editPosting(posting, editGroupNameEdit.value, posting.members, posting.resources)} );
 
   modalContent.appendChild(editGroupName);
   modalContent.appendChild(editGroupLocation);
@@ -271,8 +174,8 @@ function editModal(e, posting) {
   document.body.appendChild(modal);
 }
 
-function editPosting(posting, name, membersarr, editResourcesArr) {
-  const sendingData = [name, membersarr, editResourcesArr];
+function editPosting(posting, name, membersarr, resourcesarr) {
+  const sendingData = [name, membersarr, resourcesarr];
 
   axios({
     method: "put",
@@ -323,19 +226,68 @@ function editMembersAdding(e, array, ul, input){
   }
 }
 
+function loadingSpinner(){
+  let editResourcesLoading = document.createElement("span");
+  editResourcesLoading.setAttribute("role", "status");
+  editResourcesLoading.classList.add("hidden");
+  editResourcesLoading.innerHTML = `
+    <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+    </svg>
+    <span class="sr-only">Loading...</span>
+  `;
+  return editResourcesLoading;
+}
+
+function renderEditResources(ul, array) {
+  ul.innerHTML = "";
+    array.forEach((resource) => {
+    let eachResource = document.createElement("li");
+    eachResource.classList.add("relative");
+    let resourceLink = document.createElement("a");
+    resourceLink.href = resource.url;
+    resourceLink.target = "_blank";
+    resourceLink.textContent = resource.name;
+    resourceLink.classList.add("border","border-gray-300","rounded-lg","p-2",);
+
+    let eachResourceDeleteBtn = document.createElement("img");
+    eachResourceDeleteBtn.src = "/images/x.jpg";
+    eachResourceDeleteBtn.classList.add("cursor-pointer", "absolute", "-right-3", "-top-3", "w-6", "h-6", "rounded-full", "z-50");
+    eachResourceDeleteBtn.addEventListener("click", (e) => {
+      deleteEditResource(e, array, ul);
+    });
+    eachResource.appendChild(resourceLink);
+    eachResource.appendChild(eachResourceDeleteBtn);
+    ul.appendChild(eachResource);
+    })
+}
+
+function deleteEditResource(e, array, ul) {
+  let index = ''
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].name === e.target.parentElement.textContent.slice(0, -1)) {
+        index = i;
+      }
+    }
+    e.target.parentElement.remove();
+    array.splice(index, 1);
+    renderEditResources(ul, array);
+}
+
 function renderPostings(postings) {
   let postingsContainer = document.querySelector("#postings");
   postingsContainer.innerHTML = "";
   postings.forEach((posting) => {
     let postingElement = document.createElement("div");
     postingElement.classList.add(
-      "bg-white",
+      "bg-black",
       "border",
       "border-gray-300",
       "rounded-lg",
-      "p-4",
+      "shadow-lg",
+      "overflow-hidden",
       "mb-4",
-      "dark:bg-gray-800",
       "basis-[46%]",
       "md:basis-[30%]"
     );
@@ -344,8 +296,10 @@ function renderPostings(postings) {
     header.classList.add(
       "flex",
       "justify-end",
-      "items-center",
+      "items-baseline",
+      "bg-gray-800",
       "mb-2",
+      "p-4",
       "gap-2"
     );
 
@@ -357,7 +311,6 @@ function renderPostings(postings) {
       "bg-red-500",
       "text-white",
       "rounded-lg",
-      "mb-2",
       "hover:bg-red-600",
       "transition",
       "duration-300",
@@ -376,7 +329,6 @@ function renderPostings(postings) {
       "bg-blue-500",
       "text-white",
       "rounded-lg",
-      "mb-2",
       "hover:bg-blue-600",
       "transition",
       "duration-300",
@@ -392,34 +344,34 @@ function renderPostings(postings) {
 
     // Group name
     let postingTitle = document.createElement("div");
-    postingTitle.classList.add("mb-2");
+    postingTitle.classList.add("mb-2", "p-4");
     postingTitle.innerHTML = `
-      <h2 class="text-lg font-bold">Group Name</h2>
-      <p>${posting.groupName}</p>
+      <h2 class="text-lg font-bold text-white">Group Name</h2>
+      <p class="text-gray-300 ">${posting.groupName}</p>
     `;
 
     // Location
     let postingLocation = document.createElement("div");
-    postingLocation.classList.add("mb-2");
+    postingLocation.classList.add("mb-2", "p-4");
     postingLocation.innerHTML = `
-      <h2 class="text-lg font-bold">Location</h2>
-      <p>${posting.location}</p>
+      <h2 class="text-lg font-bold text-white">Location</h2>
+      <p class="text-gray-300">${posting.location}</p>
     `;
 
     // Members
     let postingMembers = document.createElement("div");
-    postingMembers.classList.add("mb-2");
+    postingMembers.classList.add("mb-2", "p-4");
     let membersHTML = `
-      <h2 class="text-lg font-bold">Members</h2>
+      <h2 class="text-lg font-bold text-white">Members</h2>
       <ul class="flex gap-2">
     `;
 
     if (posting.members.length == 0) {
-      membersHTML += `<li>No members</li>`;
+      membersHTML += `<li class="text-gray-200 text-sm">No members</li>`;
     } else {
       posting.members.forEach((member) => {
         membersHTML += `
-          <li> ${member}  </li>
+          <li class="text-gray-300"> ${member},  </li>
          `;
       });
     }
@@ -429,34 +381,34 @@ function renderPostings(postings) {
 
     // Date
     let postingDate = document.createElement("div");
-    postingDate.classList.add("mb-2");
+    postingDate.classList.add("mb-2", "p-4");
     postingDate.innerHTML = `
-      <h2 class="text-lg font-bold">Date</h2>
-      <p>${posting.date}</p>
+      <h2 class="text-lg font-bold text-white">Date</h2>
+      <p class="text-gray-300">${posting.date}</p>
     `;
 
     // Start time
     let postingStartTime = document.createElement("div");
-    postingStartTime.classList.add("mb-2");
+    postingStartTime.classList.add("mb-2", "p-4");
     postingStartTime.innerHTML = `
-      <h2 class="text-lg font-bold">Start Time</h2>
-      <p>${posting.startTime}</p>
+      <h2 class="text-lg font-bold text-white">Start Time</h2>
+      <p class="text-gray-300">${posting.startTime}</p>
     `;
 
     // End time
     let postingEndTime = document.createElement("div");
-    postingEndTime.classList.add("mb-2");
+    postingEndTime.classList.add("mb-2", "p-4");
     postingEndTime.innerHTML = `
-      <h2 class="text-lg font-bold">End Time</h2>
-      <p>${posting.endTime}</p>
+      <h2 class="text-lg font-bold text-white">End Time</h2>
+      <p class="text-gray-300">${posting.endTime}</p>
     `;
 
     // Resources
     let postingResources = document.createElement("div");
-    postingResources.classList.add("mb-2");
+    postingResources.classList.add("mb-2", "p-4");
     let resourcesHTML = `
-      <h2 class="text-lg font-bold">Resources</h2>
-      <ul>
+      <h2 class="text-lg font-bold text-white">Resources</h2>
+      <ul class="flex flex-wrap gap-4">
     `;
     if (posting.resources.length == 0) {
       resourcesHTML += `<li>No resources</li>`;
@@ -468,7 +420,7 @@ function renderPostings(postings) {
             href="${resource.url}" 
             target="_blank" 
             onclick="downloadFile(this)"
-            class="underline resourceList">${resource.name}</a>
+            class="underline resourceList text-gray-300">${resource.name}</a>
           </li>
         `;
       });
@@ -479,10 +431,10 @@ function renderPostings(postings) {
 
     // Topic
     let postingTopic = document.createElement("div");
-    postingTopic.classList.add("mb-2");
+    postingTopic.classList.add("mb-2", "p-4");
     postingTopic.innerHTML = `
-      <h2 class="text-lg font-bold">Topic</h2>
-      <p>${posting.topic}</p>
+      <h2 class="text-lg font-bold text-white">Topic</h2>
+      <p class="text-gray-300">${posting.topic}</p>
     `;
 
     // Append all sections to the posting element
@@ -528,7 +480,7 @@ function addMembers(e) {
       membersArr.push(membersInput.value);
       const tag = document.createElement("span");
       tag.textContent = membersInput.value;
-      tag.classList.add("border","border-gray-300","rounded-lg","px-4","py-2","m-2","relative");
+      tag.classList.add("border","border-gray-300","rounded-lg","px-4","py-2","m-2","relative", "bg-gray-400");
       // remove btn -> <svg class="h-8 w-8 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
       const removeBtn = createXbutton("members", membersArr);
       tag.appendChild(removeBtn);
@@ -564,7 +516,8 @@ function addResources(sentData) {
       "px-4",
       "py-2",
       "relative",
-      "z-10"
+      "z-10",
+      "bg-gray-400"
     );
 
     const removeBtn = createXbutton("resources", resourcesArr);
@@ -573,47 +526,53 @@ function addResources(sentData) {
   });
 }
 
-async function uploadImage(e) {
+async function uploadImage(e, role, loading, array, ul) {
   const file = e.target.files[0];
   if (!file) {
     console.error("No file selected");
     return;
   }
 
-  if (file) {
-    const formData = new FormData();
-    formData.append("file", file);
-    fetch("/imgUpload", {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  if (role === "edit") {
+    loading.classList.remove("hidden");
+  }
+
+  try {
+    const res = await fetch("/imgUpload", {
       method: "POST",
       body: formData,
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        if (data.url.indexOf(" ")) {
-          let goodUrl = data.url.replace(/\s/g, "%20");
-          const sendingData = {
-            url: goodUrl,
-            name: data.name,
-          };
-          addResources(sendingData);
-        } else {
-          const sendingData = {
-            url: data.url,
-            name: data.name,
-          };
-          addResources(sendingData);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    });
+    const data = await res.json();
+
+    if (role === "edit") {
+      loading.classList.add("hidden");
+    }
+
+    const url = data.url.includes(" ") ? data.url.replace(/\s/g, "%20") : data.url;
+    const sendingData = {
+      url: url,
+      name: data.name,
+    };
+
+    if (role === "edit") {
+      array.push(sendingData);
+      renderEditResources(ul, array);
+    } else if (role === "new") {
+      addResources(sendingData);
+    }
+  } catch (err) {
+    console.error(err);
+    if (role === "edit") {
+      loading.classList.add("hidden");
+    }
   }
 }
 
 imageInput.addEventListener("change", async (e) => {
-  uploadImage(e);
+  uploadImage(e, "new");
   e.target.value = "";
 });
 
