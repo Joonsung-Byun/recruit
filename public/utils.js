@@ -9,7 +9,7 @@ function addClass() {
       element.classList.add(
         "border",
         "border-gray-300",
-        "text-gray-900",
+        "text-white",
         "text-sm",
         "rounded-lg",
         "focus:ring-primary-600",

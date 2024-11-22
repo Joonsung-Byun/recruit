@@ -12,32 +12,39 @@ function editModal(e, posting) {
   
   // modal content
   const modalContent = document.createElement("div");
-  modalContent.classList.add("bg-white","p-4","rounded-lg","dark:bg-gray-800", "max-w-xs", "md:max-w-xl", "lg:max-w-2xl", "w-full");
+  modalContent.classList.add("p-4","rounded-lg","bg-gray-800", "max-w-xs", "md:max-w-xl", "lg:max-w-2xl", "w-full");
+
 
   //Group Name
   let editGroupName = document.createElement("div");
   editGroupName.classList.add("mb-3");
 
   let editNameGuide = document.createElement("h2");
+  editNameGuide.classList.add("text-white", "mb-2");
   editNameGuide.textContent = "Group Name";
 
   let editGroupNameEdit = document.createElement("input");
   editGroupNameEdit.setAttribute("id", "nameEditInput");
-  editGroupNameEdit.classList.add("border","px-2","py-1", "rounded", "bg-gray-100", "border", "block", "w-full" );
+  editGroupNameEdit.classList.add("border", "border-white" ,"px-2","py-1", "rounded", "bg-black", "border", "block", "w-full", "text-white" );
   editGroupNameEdit.value = posting.groupName;
 
   editGroupName.appendChild(editNameGuide);
   editGroupName.appendChild(editGroupNameEdit);
 
+
+  let locationAndMembers = document.createElement("div");
+  locationAndMembers.classList.add("flex", "gap-4", "flex-col", "md:flex-row");
+
   //Location
   let editGroupLocation = document.createElement("div");
-  editGroupLocation.classList.add("mb-3");
+  editGroupLocation.classList.add("mb-3", "md:basis-6/12");
 
   let editLocationGuide = document.createElement("h2");
   editLocationGuide.textContent = "Location";
+  editLocationGuide.classList.add("text-white", "mb-2");
 
   let editLocationEdit = document.createElement("input");
-  editLocationEdit.classList.add("border","px-2","py-1", "rounded", "bg-gray-100", "border" , "block", "w-full" );
+  editLocationEdit.classList.add("border","px-2","py-1", "rounded", "bg-black", "border" , "block", "w-full", "text-white", );
   editLocationEdit.value = posting.location;
 
   editGroupLocation.appendChild(editLocationGuide);
@@ -45,15 +52,16 @@ function editModal(e, posting) {
 
   //Members
   let editMemberDiv = document.createElement("div");
-  editMemberDiv.classList.add("mb-3");
+  editMemberDiv.classList.add("mb-3", "md:basis-6/12");
 
   let editMemberDivGuide = document.createElement("h2");
+  editMemberDivGuide.classList.add("text-white", "mb-2");
   editMemberDivGuide.textContent = "Members";
  
   let editMemberInput = document.createElement("input");
   editMemberInput.placeholder = "Hit enter after typing a name"
   editMemberInput.setAttribute("type", "text");
-  editMemberInput.classList.add("border","px-2","py-1", "rounded", "bg-gray-100", "border", "mb-2" , "block", "w-full" );
+  editMemberInput.classList.add("border","px-2","py-1", "rounded", "bg-black", "border", "mb-2" , "block", "w-full", "text-white" );
 
   let editMembers = document.createElement("ul");
   editMembers.classList.add(`editMembersUl_${posting.id}`, "flex", "gap-4", "flex-wrap");
@@ -71,6 +79,7 @@ function editModal(e, posting) {
   editResources.classList.add("mb-5");
 
   let editResourcesGuide = document.createElement("h2");
+  editResourcesGuide.classList.add("text-white", "mb-2");
   editResourcesGuide.textContent = "Resources";
 
   let editResourcesLoading = loadingSpinner();
@@ -82,7 +91,7 @@ function editModal(e, posting) {
 
   let editResourcesInput = document.createElement("input");
   editResourcesInput.setAttribute("type", "file");
-  editResourcesInput.classList.add("block","w-full","border", "border-gray-200", "shadow-sm", "rounded-lg", "text-sm", "focus:z-10", "focus:border-blue-500", "focus:ring-blue-500", "disabled:opacity-50", "disabled:pointer-events-none", "dark:bg-neutral-900", "dark:border-neutral-700", "dark:text-neutral-400", "file:bg-black", "file:border-0", "file:me-4", "file:py-3", "file:px-4", "file:text-white", "mb-4");
+  editResourcesInput.classList.add("block","w-full","border", "border-gray-200", "shadow-sm", "rounded-lg", "text-sm", "focus:z-10", "focus:border-blue-500", "focus:ring-blue-500", "file:bg-black", "file:border-0", "file:me-4", "file:py-3", "file:px-4", "file:text-white", "mb-4", "text-white");
 
   editResourcesInput.addEventListener("change", async (e) => {
     uploadImage(e, "edit", editResourcesLoading, posting.resources, editResourcesUl);
@@ -94,15 +103,19 @@ function editModal(e, posting) {
   editResources.appendChild(editResourcesInput);
   editResources.appendChild(editResourcesUl);
 
+  const timeContainer = document.createElement("div");
+  timeContainer.classList.add("flex", "gap-4", "flex-col", "md:flex-row");
+
   //Date time
   let editDateTime = document.createElement("div");
   editDateTime.classList.add("mb-3");
 
   let editDateTimeGuide = document.createElement("h2");
+  editDateTimeGuide.classList.add("text-white", "mb-2");
   editDateTimeGuide.textContent = "Date";
 
   let editDateTimeEdit = document.createElement("input");
-  editDateTimeEdit.classList.add("border", "px-2", "py-1", "rounded", "bg-gray-100", "border" , "block", "w-full" );
+  editDateTimeEdit.classList.add("border", "px-2", "rounded", "bg-gray-600", "border" , "block", "w-full", "text-white", "h-10");
   editDateTimeEdit.type = "date";
   editDateTimeEdit.classList.add("border");
   editDateTimeEdit.value = posting.date;
@@ -112,14 +125,15 @@ function editModal(e, posting) {
 
   //Start time
   let editStartTime = document.createElement("div");
-  editStartTime.classList.add("mb-3");
+  editStartTime.classList.add("mb-3", "md:basis-6/12");
 
   let editStartTimeGuide = document.createElement("h2");
+  editStartTimeGuide.classList.add("text-white", "mb-2");
   editStartTimeGuide.textContent = "Start Time";
 
   let editStartTimeEdit = document.createElement("input");
   editStartTimeEdit.type = "time";
-  editStartTimeEdit.classList.add("border", "px-2", "py-1", "rounded", "bg-gray-100", "border" , "block", "w-full" );
+  editStartTimeEdit.classList.add("border", "px-2", "rounded", "bg-gray-600",  "block", "w-full", "text-white" , "h-10");
   editStartTimeEdit.value = posting.startTime;
 
   editStartTime.appendChild(editStartTimeGuide);
@@ -127,14 +141,15 @@ function editModal(e, posting) {
 
   //End Time
   let editEndTime = document.createElement("div");
-  editEndTime.classList.add("mb-3");
+  editEndTime.classList.add("mb-3", "md:basis-6/12");
 
   let editEndTimeGuide = document.createElement("h2");
   editEndTimeGuide.textContent = "End Time";
+  editEndTimeGuide.classList.add("text-white", "mb-2");
 
   let editEndTimeEdit = document.createElement("input");
   editEndTimeEdit.type = "time";
-  editEndTimeEdit.classList.add("border");
+  editEndTimeEdit.classList.add("border", "px-2", "rounded", "bg-gray-600", "border" , "block", "w-full", "text-white" , "h-10");
   editEndTimeEdit.value = posting.endTime;
 
   editEndTime.appendChild(editEndTimeGuide);
@@ -142,15 +157,17 @@ function editModal(e, posting) {
 
   //Topic
   let editTopic = document.createElement("div");
-  editEndTime.classList.add("mb-3");
+  editTopic.setAttribute("id", "topicEdit");
+  editTopic.classList.add("mb-6", );
 
   let editTopicGuide = document.createElement("h2");
-  editEndTimeGuide.textContent = "Topic";
+  editTopicGuide.textContent = "Topic";
+  editTopicGuide.classList.add("text-white", "mb-2");
 
   let editTopicEdit = document.createElement("input");
-  editEndTimeEdit.type = "text";
-  editEndTimeEdit.classList.add("border", "px-2", "py-1", "rounded", "bg-gray-100", "border" , "block", "w-full" );
-  editEndTimeEdit.value = posting.topic;
+  editTopicEdit.type = "text";
+  editTopicEdit.classList.add("border", "px-2", "py-1", "rounded", "bg-black", "border" , "block", "w-full", "text-white");
+  editTopicEdit.value = posting.topic;
 
   editTopic.appendChild(editTopicGuide);
   editTopic.appendChild(editTopicEdit);
@@ -159,24 +176,35 @@ function editModal(e, posting) {
   saveChangeBtn.classList.add("cursor-pointer", "bg-blue-500", "text-white", "rounded-lg", "px-4", "py-2", "hover:bg-blue-600", "transition", "duration-300", "ease-in-out", "w-full", "text-center", "block");
   saveChangeBtn.textContent = "Save";
 
-  saveChangeBtn.addEventListener("click", () => { editPosting(posting, editGroupNameEdit.value, posting.members, posting.resources)} );
+  saveChangeBtn.addEventListener("click", () => { 
+    editPosting(posting, 
+      editGroupNameEdit.value, 
+      editLocationEdit.value, 
+      posting.members, 
+      editStartTimeEdit.value, 
+      editEndTimeEdit.value, 
+      editDateTimeEdit.value, 
+      posting.resources, 
+      editTopicEdit.value)} );
 
   modalContent.appendChild(editGroupName);
-  modalContent.appendChild(editGroupLocation);
-  modalContent.appendChild(editMemberDiv);
+  locationAndMembers.appendChild(editGroupLocation);
+  locationAndMembers.appendChild(editMemberDiv);
+  modalContent.appendChild(locationAndMembers);
+  timeContainer.appendChild(editStartTime);
+  timeContainer.appendChild(editEndTime);
+  modalContent.appendChild(timeContainer);
   modalContent.appendChild(editDateTime);
-  modalContent.appendChild(editStartTime);
   modalContent.appendChild(editResources);
-  modalContent.appendChild(editEndTime);
   modalContent.appendChild(editTopic);
   modalContent.appendChild(saveChangeBtn);
   modal.appendChild(modalContent);
   document.body.appendChild(modal);
 }
 
-function editPosting(posting, name, membersarr, resourcesarr) {
-  const sendingData = [name, membersarr, resourcesarr];
-
+function editPosting(posting, name, location, membersarr, startTime, endTime, date, resourcesarr, topic) {
+  const sendingData = [name, location, membersarr, startTime, endTime, date, resourcesarr, topic];
+  console.log(sendingData)
   axios({
     method: "put",
     url: `/postings/${posting.id}`,
@@ -204,7 +232,7 @@ function renderEditMembers(ul, array) {
   array.forEach((member) => {
     let eachmember = document.createElement("li");
     eachmember.innerHTML = member;
-    eachmember.classList.add("border","border-gray-300","rounded-lg","px-2", "relative", "py-1");
+    eachmember.classList.add("border","border-gray-300","rounded-lg","px-2", "relative", "py-1", "bg-gray-900", "text-white");
 
     let eachmemberDeleteBtn = document.createElement("img");
     eachmemberDeleteBtn.src = "/images/x.jpg";
@@ -249,11 +277,11 @@ function renderEditResources(ul, array) {
     resourceLink.href = resource.url;
     resourceLink.target = "_blank";
     resourceLink.textContent = resource.name;
-    resourceLink.classList.add("border","border-gray-300","rounded-lg","p-2",);
+    resourceLink.classList.add("border","border-gray-300","rounded-lg","p-2", "bg-gray-900", "text-white");
 
     let eachResourceDeleteBtn = document.createElement("img");
     eachResourceDeleteBtn.src = "/images/x.jpg";
-    eachResourceDeleteBtn.classList.add("cursor-pointer", "absolute", "-right-3", "-top-3", "w-6", "h-6", "rounded-full", "z-50");
+    eachResourceDeleteBtn.classList.add("cursor-pointer", "absolute", "-right-4", "-top-4", "w-6", "h-6", "rounded-full", "z-50");
     eachResourceDeleteBtn.addEventListener("click", (e) => {
       deleteEditResource(e, array, ul);
     });
@@ -363,16 +391,22 @@ function renderPostings(postings) {
     postingMembers.classList.add("mb-2", "p-4");
     let membersHTML = `
       <h2 class="text-lg font-bold text-white">Members</h2>
-      <ul class="flex gap-2">
+      <ul class="flex gap-2 flex-wrap">
     `;
 
     if (posting.members.length == 0) {
       membersHTML += `<li class="text-gray-200 text-sm">No members</li>`;
     } else {
-      posting.members.forEach((member) => {
-        membersHTML += `
+      posting.members.forEach((member, index) => {
+        if(index === posting.members.length - 1){
+          membersHTML += `
+          <li class="text-gray-300"> ${member} </li>
+         `;
+        }else {
+          membersHTML += `
           <li class="text-gray-300"> ${member},  </li>
          `;
+        }
       });
     }
 
@@ -623,6 +657,18 @@ function addPosting() {
     })
     .catch((error) => {
       console.error(error);
+    })
+    .finally(() => {
+      document.getElementById("name").value = "";
+      document.getElementById("location").value = "";
+      document.getElementById("date").value = "";
+      document.getElementById("startTime").value = "";
+      document.getElementById("endTime").value = "";
+      document.getElementById("topic").value = "";
+      membersArr.length = 0;
+      resourcesArr.length = 0;
+      document.querySelector("#membersUl").innerHTML = "";
+      document.querySelector("#resourcesUl").innerHTML = "";
     });
 }
 
