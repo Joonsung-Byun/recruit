@@ -27,10 +27,16 @@
         <section>
 
             <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
-                <h2 class="4 text-xl font-bold text-white">Add a new study group posting</h2>
-                <span class="mb-4 block text-white">Members and Resources are optional</span>
-                <div>
-                    <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 ">
+                <button id="newScheduleBtn" class="bg-green-300 text-black px-5 py-2 rounded-lg">
+                    Schedule a new study group
+                </button>
+
+
+
+
+                <div id="newSchedule">
+                    <div class="gap-4 sm:grid-cols-2 sm:gap-6 hidden">
+                        <span class="mb-4 block text-white">Members and Resources are optional</span>
                         <div class="sm:col-span-2">
                             <label for="name" class="text-white">Study Group Name *</label>
                             <input type="text" name="name" id="name"class="bg-black" placeholder="Study Group Name">
@@ -62,8 +68,16 @@
                             <label for="endTime" class="text-white">End Time *</label>
                             <input type="time" name="endTime" id="endTime">
                         </div>
+
+
                         <div class="sm:col-span-2">
-                            <label for="resources" class="text-white cursor-pointer">Resources Upload</label>
+                            
+                            <div class="flex gap-8 items-baseline" id="spinner">
+                                <label for="resources" class="text-white cursor-pointer">Resources Upload</label>
+                               
+                            </div>
+
+                            
                             <input type="file" name="resources" id="resources" class="block cursor-pointer w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 text-white focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 file:bg-black file:border-0 file:me-4 file:py-3 file:px-4 file:text-white">
                             <div id="resourcesUl" class="mt-4 flex flex-wrap gap-4 ">
 
@@ -74,15 +88,26 @@
                             <label for="topic" class="text-white">Topic *</label>
                             <input type="text" name="topic" id="topic" placeholder="Topic">
                         </div>
-                    </div>
-                    <div class="flex justify-center items-center">
-                        <button id="submitBtn"
-                            class=" px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center rounded-lg bg-gray-200 text-black  focus:ring-primary-200 hover:bg-black hover:text-white duration-200">
-                            Add Posting
-                        </button>
+
+                        <div class="flex justify-center items-center">
+                            <button id="submitBtn"
+                                class=" px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center rounded-lg bg-gray-200 text-black  focus:ring-primary-200 hover:bg-black hover:text-white duration-200">
+                                Add Posting
+                            </button>
+                        </div>
                     </div>
 
+
                 </div>
+
+
+
+
+
+
+
+
+
             </div>
             <div class="max-w-7xl mx-auto mb-5">
                 <h1 class="text-white text-3xl">Schedule</h1>

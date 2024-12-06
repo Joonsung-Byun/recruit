@@ -1,7 +1,43 @@
 const imageInput = document.querySelector("#resources");
 let resourcesArr = [];
 const membersInput = document.querySelector("#members");
-const membersArr = [];
+let membersArr = [];
+
+let show = false
+const newScheduleBtn = document.querySelector("#newScheduleBtn");
+newScheduleBtn.addEventListener("click", toggleNewSchedule);
+
+//버튼을 누르면 newSchedule에 class중에서 hidden을 제거하고 grid를 추가한다
+// 또한 버튼의 text를 Hidden으로 바꾼다
+function toggleNewSchedule() {
+  const newSchedule = document.querySelector("#newSchedule");
+  console.log(newSchedule.childNodes[1])
+
+  if (!show) {
+    newSchedule.childNodes[1].classList.remove("hidden");
+    newSchedule.childNodes[1].classList.add("grid")
+    newScheduleBtn.textContent = "Hide";
+    show = true
+  } else {
+    membersArr= [];
+    resourcesArr = [];
+    membersInput.value = "";
+    imageInput.value = "";
+    document.getElementById("name").value = "";
+    document.getElementById("location").value = "";
+    document.getElementById("date").value = "";
+    document.getElementById("startTime").value = "";
+    document.getElementById("endTime").value = "";
+    document.getElementById("topic").value = "";
+    document.querySelector("#membersUl").innerHTML = "";
+    document.querySelector("#resourcesUl").innerHTML = "";
+    newSchedule.childNodes[1].classList.add("hidden");
+    newSchedule.childNodes[1].classList.remove("grid")
+    newScheduleBtn.textContent = "Schedule a new schedule";
+
+    show = false
+  }
+}
 
 
 function editModal(e, posting) {
@@ -529,7 +565,7 @@ membersInput.addEventListener("keydown", (e) => {
   addMembers(e);
 });
 
-function addResources(sentData) {
+function addResources(sentData, addResourcesLoading) {
   if (resourcesArr.some((resource) => resource.name === sentData.name)) {
     alert("You already added this resource");
     return;
@@ -550,9 +586,10 @@ function addResources(sentData) {
       "px-4",
       "py-2",
       "relative",
-      "z-10",
       "bg-gray-400"
     );
+
+    addResourcesLoading.remove();
 
     const removeBtn = createXbutton("resources", resourcesArr);
     tag.appendChild(removeBtn);
@@ -566,6 +603,12 @@ async function uploadImage(e, role, loading, array, ul) {
     console.error("No file selected");
     return;
   }
+
+  const addResourcesLoading = loadingSpinner();
+  addResourcesLoading.classList.remove("hidden");
+ 
+
+  document.querySelector('#spinner').insertAdjacentElement("beforeend", addResourcesLoading)
 
   const formData = new FormData();
   formData.append("file", file);
@@ -595,7 +638,7 @@ async function uploadImage(e, role, loading, array, ul) {
       array.push(sendingData);
       renderEditResources(ul, array);
     } else if (role === "new") {
-      addResources(sendingData);
+      addResources(sendingData, addResourcesLoading);
     }
   } catch (err) {
     console.error(err);
@@ -611,7 +654,6 @@ imageInput.addEventListener("change", async (e) => {
 });
 
 function addPosting() {
-  //validate -> groupName, location, date, startTime, endTime, topic are required
   if (
     document.getElementById("name").value === "" ||
     document.getElementById("location").value === "" ||
