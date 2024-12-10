@@ -320,6 +320,7 @@ function renderEditResources(ul, array) {
     eachResourceDeleteBtn.classList.add("cursor-pointer", "absolute", "-right-4", "-top-4", "w-6", "h-6", "rounded-full", "z-50");
     eachResourceDeleteBtn.addEventListener("click", (e) => {
       deleteEditResource(e, array, ul);
+      console.log('hello')
     });
     eachResource.appendChild(resourceLink);
     eachResource.appendChild(eachResourceDeleteBtn);
@@ -330,9 +331,9 @@ function renderEditResources(ul, array) {
 function deleteEditResource(e, array, ul) {
   let index = ''
     for (let i = 0; i < array.length; i++) {
-      if (array[i].name === e.target.parentElement.textContent.slice(0, -1)) {
+      if (array[i].name === e.target.parentElement.textContent) {
         index = i;
-      }
+      } 
     }
     e.target.parentElement.remove();
     array.splice(index, 1);
@@ -613,11 +614,12 @@ async function uploadImage(e, role, loading, array, ul) {
   const formData = new FormData();
   formData.append("file", file);
 
-  if (role === "edit") {
-    loading.classList.remove("hidden");
-  }
 
   try {
+    if (role === "edit") {
+      loading.classList.remove("hidden");
+    }
+  
     const res = await fetch("/imgUpload", {
       method: "POST",
       body: formData,
@@ -637,6 +639,7 @@ async function uploadImage(e, role, loading, array, ul) {
     if (role === "edit") {
       array.push(sendingData);
       renderEditResources(ul, array);
+      loading.classList.add("hidden");
     } else if (role === "new") {
       addResources(sendingData, addResourcesLoading);
     }
@@ -645,6 +648,9 @@ async function uploadImage(e, role, loading, array, ul) {
     if (role === "edit") {
       loading.classList.add("hidden");
     }
+  } finally{
+    addResourcesLoading.remove();
+    loading.classList.add("hidden");
   }
 }
 
